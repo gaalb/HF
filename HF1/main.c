@@ -160,7 +160,7 @@ void sdl_init(int szeles, int magas, const char* tipus, SDL_Window** pwindow, SD
         exit(1);
     }
     TTF_Init();
-    TTF_Font *font = TTF_OpenFont(tipus, 20);
+    TTF_Font *font = TTF_OpenFont(tipus, 32);
     if (font == NULL) {
         SDL_Log("Nem sikerult megnyitni a fontot! %s\n", TTF_GetError());
         exit(1);
@@ -194,7 +194,7 @@ int main(int argc, char *argv[]) {
     SDL_Color feher = {255, 255, 255};
 
     /* hatter */
-    for (int i = 0; i < 2000; ++i)
+    for (int i = 0; i < 20000; ++i)
         filledCircleRGBA(renderer, rand() % SZELES, rand() % MAGAS,
                          10 + rand() % 5, rand() % 256, rand() % 256, rand() % 256, 64);
 
