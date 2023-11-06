@@ -1,0 +1,55 @@
+typeracer:
+
+főmenü:
+-ranglista és beállítások
+-játék egyedül
+-játék 'bot' ellen
+-felváltott játék
+
+Ranglista:
+-wpm  alapján
+-ha top10-ben van 1 illető, akkor megkérdezi a nevét a játék, ez alapján ment
+Beállítások:
+-Botok gyorsasága
+-Ranglista törlése
+
+Játék egyedül:
+-megjelenik egy szöveg
+-megjelenik egy szövegdoboz
+-ahogy ír a felhasználó a szövegdobozba, a szöveg zöldül ki
+-a beírandó szó alá van húzva
+-minden helyesen beírt karakter lépteti a kurzort a szövegben
+-helytelenül beírt karaktersorozat pirossal háttérszínezi a szövget
+-a piros jelzés eltüntethető törléssel (backspace)
+-az aláhúzott szó space-enként változik, ilyenkir ürül a text box ("elmentődik" a helyes szó)
+-zölddel kiszínezett szövegen már nem lehet rontani (nem lehet visszább menni backspace-vel)
+-írásjelek, nagy-kisbetű is számít
+-csak angol ABC kis-és nagybetűi, valamint írásjelei lehetnek
+-angolul van a szöveg
+-az íráshoz illusztráció is társul: egy versenyautó, amely balról jobbra megy egy pontozott vonalon
+-a versenyautó előrébb mozdul minden alkalommal, mikor egy szó helyesen begépelésre kerül space után
+- az előremozdulás a szó hosszával arányos
+-akkor ér célba, mikor a legutolsó mondat végén leütöttük a pontot 
+-a verseny visszaszámlálással kezdődik
+-a visszaszámlálás előtt a gépelésnek nincs hatása
+-a verseny végén statisztika kerül mutatásra: WPM, idő, pontosság (pontosság = az elsőre helyesen leütött karakterek aránya)
+-a verseny végén megmutatódik az is, honnan került kiválasztásra a szöveg
+
+Játék Bot ellen:
+-a bot viselkedése: adott CPM, adott pontosság
+-ha elront egy betűt, akkor a CPM-nek megfelelő idő után töröl vissza
+-amikor botok ellen történik a játék, összesen 5 játékos lesz (4 bos, 1 ember)
+-mindegyik játékosnak/botnak van 1-1 autó display
+-mikor beérkezik egy autó, jelezve van a helyezése (1-5)
+-mikor az utolsó bot is beérkezett, megjelenik az előzőleg említett statisztika
+-ha top10-be került a versenyző, nevet kér be
+
+Játék felváltva:
+-5 játékosnak van hely
+-Be kell írni szövegdobozokba a játékosok neveit, ha kevesebb játékos név lett beírva, mint 5, kevesebb játékos lesz
+-Az első játék a 'játék egyedül'-nek megfelelően történik
+-Minden kör után az akkor játszott játékos statisztikája megjelenik
+-Az elkövetkező játékmenetekben a már játszott játékosok 'szelleme' játszik, azaz mutatja a játék, mikor hogy állt az autójuk
+-Ehhez elmentődik, melyik szót mikor ütötte be mindegyik előző játékos
+-Mikor az utolsó játékos is végzett, mindegyik játékos statisztikája megjelenik, kiegészítve egy átlag statisztikával is
+-Mivel a nevek alapból meg lettek adva, ezek alapján adódnak hozzá a ranglistához

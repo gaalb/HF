@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1699284338 source:d:\prog\hf\testing\main.c
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	"debugmalloc.h"
+
+1697473819 d:\prog\hf\testing\debugmalloc.h
+	<stdbool.h>
+	<stddef.h>
+	<stdlib.h>
+	<stdio.h>
+	<ctype.h>
+	<string.h>
+	<stdarg.h>
+	<process.h>
+	<unistd.h>
+
