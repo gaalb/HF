@@ -137,6 +137,7 @@ char* text_to_string(const Text text) {
 int main()
 {
     srand(time(0));
+    #if 0
     TextArray TheLordOfTheRings = parse_file("lotr_chunks.txt");
     /*Do whatever we want:*/
     Text text = TheLordOfTheRings.texts[rand()%TheLordOfTheRings.text_count];
@@ -146,5 +147,10 @@ int main()
     /*free everything*/
     free(str);
     free_textarray(&TheLordOfTheRings);
+    #endif
+
+
+
+
     return 0;
 }

@@ -3,17 +3,20 @@ import re
 
 def clean_string(input_string):
     # Replace newline and tab characters with spaces
-    cleaned_string = re.sub(r'[\n\t]+', ' ', input_string)
+    input_string = re.sub(r'[\n\t]+', ' ', input_string)
+    # Replace ` with ' if present
+    input_string = input_string.replace('`', "'")
     # Remove duplicate spaces
-    cleaned_string = re.sub(r'\s+', ' ', cleaned_string)
-    return cleaned_string
+    output_string = re.sub(r'\s+', ' ', input_string)
+    return output_string
 
 
-def extract_chunks(input, output):
-    allowed_characters = '.,!?()-"; '
+def extract_chunks(input, output_long, output_short):
+    allowed_characters = ['.', ",", "!", "?", "-", ";", " ", "'", "\""]
     with open(input, 'r', encoding='utf-8') as input_file:
         content = input_file.read()
         content = clean_string(content)
+    print(f"Max word length: {max([len(word) for word in content.split()])}")
     chunks = []
     chunk = ""
     for i in range(len(content)):
@@ -24,7 +27,7 @@ def extract_chunks(input, output):
         else:
             if char in allowed_characters or char.isalpha():
                 chunk += char
-                if len(chunk) > 300 and (chunk.count('"')) % 2 == 0 and char in '.!?"':
+                if len(chunk) > 250 and (chunk.count('"')) % 2 == 0 and char in '.!?"':
                     # header = f"Len: {len(chunk)}, WordLen: {max(len(word) for word in chunk.split())}\n"
                     header = f"WordCount: {len(chunk.split())}\n"
                     chunks.append(header + chunk)
@@ -33,13 +36,17 @@ def extract_chunks(input, output):
                 chunk = ""
     print(f"Number of chunks: {len(chunks)}")
     header = f"TextCount: {len(chunks)}\n"
-    with open(output, 'w', encoding='utf-8') as output_file:
+    with open(output_long, 'w', encoding='utf-8') as output_file:
         output_file.write(header)
         output_file.write('\n\n'.join(chunks))
-
+    header = f"TextCount: 100\n"
+    with open(output_short, 'w', encoding='utf-8') as output_file:
+        output_file.write(header)
+        output_file.write('\n\n'.join(chunks[:100]))
 
 if __name__ == "__main__":
-    input_filename = 'lotr.txt'  # Replace with your input file
-    output_filename = 'lotr_chunks.txt'  # Replace with your output file
-    extract_chunks(input_filename, output_filename)
+    input_filename = 'hobbit.txt'  # Replace with your input file
+    output_long = '../HF1/hobbit_long.txt'  # Replace with your output file
+    output_short = '../HF1/hobbit_short.txt'
+    extract_chunks(input_filename, output_long, output_short)
 
