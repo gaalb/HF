@@ -11,6 +11,7 @@
 #define MAGAS 600
 #define FONT "../arial.ttf"
 #define HOSSZ 100
+#define NEXT_WORD SDL_USEREVENT+1
 
 SDL_Color fekete = {0, 0, 0};
 SDL_Color feher = {255, 255, 255};
@@ -281,123 +282,81 @@ void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Ren
 
 }
 
-
-bool input_target_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, SDL_Color szoveg, TTF_Font *font, SDL_Renderer *renderer, char* target) {
-    printf("target: %s, len: %d\n", target, (int)strlen(target));
-    /* Ez tartalmazza az aktualis szerkesztest */
-    char composition[SDL_TEXTEDITINGEVENT_TEXT_SIZE];
-    composition[0] = '\0';
-    /* Ezt a kirajzolas kozben hasznaljuk */
-    char textandcomposition[hossz + SDL_TEXTEDITINGEVENT_TEXT_SIZE + 1];
+void render_input(char *input, SDL_Rect teglalap,TTF_Font *font, SDL_Renderer *renderer, char* composition, char* textandcomposition) {
     /* Max hasznalhato szelesseg */
     int maxw = teglalap.w - 2;
     int maxh = teglalap.h - 2;
+    /* doboz kirajzolasa */
+    boxRGBA(renderer, teglalap.x, teglalap.y, teglalap.x + teglalap.w - 1, teglalap.y + teglalap.h - 1, feher.r, feher.g, feher.b, 255);
+    rectangleRGBA(renderer, teglalap.x, teglalap.y, teglalap.x + teglalap.w - 1, teglalap.y + teglalap.h - 1, fekete.r, fekete.g, fekete.b, 255);
+    /* szoveg kirajzolasa */
+    int w;
+    strcpy(textandcomposition, input);
+    strcat(textandcomposition, composition);
+    if (textandcomposition[0] != '\0') {
+        SDL_Surface *felirat = TTF_RenderUTF8_Blended(font, textandcomposition, fekete);
+        SDL_Texture *felirat_t = SDL_CreateTextureFromSurface(renderer, felirat);
+        SDL_Rect cel = { teglalap.x, teglalap.y, felirat->w < maxw ? felirat->w : maxw, felirat->h < maxh ? felirat->h : maxh };
+        SDL_RenderCopy(renderer, felirat_t, NULL, &cel);
+        SDL_FreeSurface(felirat);
+        SDL_DestroyTexture(felirat_t);
+        w = cel.w;
+    } else {
+        w = 0;
+    }
+    /* kurzor kirajzolasa */
+    if (w < maxw) {
+        vlineRGBA(renderer, teglalap.x + w + 2, teglalap.y + 2, teglalap.y + teglalap.h - 3, fekete.r, fekete.g, fekete.b, 192);
+    }
+}
 
-    dest[0] = '\0';
-
-    bool next = false;
-    bool kilep = false;
-
-    SDL_StartTextInput();
-    while (!kilep && !next) {
-        /* doboz kirajzolasa */
-        boxRGBA(renderer, teglalap.x, teglalap.y, teglalap.x + teglalap.w - 1, teglalap.y + teglalap.h - 1, hatter.r, hatter.g, hatter.b, 255);
-        rectangleRGBA(renderer, teglalap.x, teglalap.y, teglalap.x + teglalap.w - 1, teglalap.y + teglalap.h - 1, szoveg.r, szoveg.g, szoveg.b, 255);
-        /* szoveg kirajzolasa */
-        int w;
-        strcpy(textandcomposition, dest);
-        strcat(textandcomposition, composition);
-        if (textandcomposition[0] != '\0') {
-            SDL_Surface *felirat = TTF_RenderUTF8_Blended(font, textandcomposition, szoveg);
-            SDL_Texture *felirat_t = SDL_CreateTextureFromSurface(renderer, felirat);
-            SDL_Rect cel = { teglalap.x, teglalap.y, felirat->w < maxw ? felirat->w : maxw, felirat->h < maxh ? felirat->h : maxh };
-            SDL_RenderCopy(renderer, felirat_t, NULL, &cel);
-            SDL_FreeSurface(felirat);
-            SDL_DestroyTexture(felirat_t);
-            w = cel.w;
-        } else {
-            w = 0;
+void handle_backspace(char* input) {
+    int textlen = strlen(input);
+    do {
+        if (textlen == 0) {
+            break;
         }
-        /* kurzor kirajzolasa */
-        if (w < maxw) {
-            vlineRGBA(renderer, teglalap.x + w + 2, teglalap.y + 2, teglalap.y + teglalap.h - 3, szoveg.r, szoveg.g, szoveg.b, 192);
+        if ((input[textlen-1] & 0x80) == 0x00)   {
+            /* Egy bajt */
+            input[textlen-1] = 0x00;
+            break;
         }
-        /* megjeleniti a képernyon az eddig rajzoltakat */
-        SDL_RenderPresent(renderer);
-        SDL_Event event;
-        SDL_WaitEvent(&event);
-        switch (event.type) {
-            /* Kulonleges karakter */
-            case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_BACKSPACE) {
-                    int textlen = strlen(dest);
-                    do {
-                        if (textlen == 0) {
-                            break;
-                        }
-                        if ((dest[textlen-1] & 0x80) == 0x00)   {
-                            /* Egy bajt */
-                            dest[textlen-1] = 0x00;
-                            break;
-                        }
-                        if ((dest[textlen-1] & 0xC0) == 0x80) {
-                            /* Bajt, egy tobb-bajtos szekvenciabol */
-                            dest[textlen-1] = 0x00;
-                            textlen--;
-                        }
-                        if ((dest[textlen-1] & 0xC0) == 0xC0) {
-                            /* Egy tobb-bajtos szekvencia elso bajtja */
-                            dest[textlen-1] = 0x00;
-                            break;
-                        }
-                    } while(true);
-                }
-                if (event.key.keysym.sym == SDLK_SPACE) {
-                    if (strcmp(dest, target)==0) {
-                        next = true;
-                        printf("dest: %s, len: %d\n", dest, (int)strlen(dest));
-                    }
-                }
-                break;
+        if ((input[textlen-1] & 0xC0) == 0x80) {
+            /* Bajt, egy tobb-bajtos szekvenciabol */
+            input[textlen-1] = 0x00;
+            textlen--;
+        }
+        if ((input[textlen-1] & 0xC0) == 0xC0) {
+            /* Egy tobb-bajtos szekvencia elso bajtja */
+            input[textlen-1] = 0x00;
+            break;
+        }
+    } while(true);
 
-            /* A feldolgozott szoveg bemenete */
-            case SDL_TEXTINPUT:
-                if (strlen(dest) + strlen(event.text.text) < hossz) {
-                    strcat(dest, event.text.text);
-                }
-                printf("match len: %d\n", match_len(target, dest));
+}
 
-                /* Az eddigi szerkesztes torolheto */
-                composition[0] = '\0';
-                break;
-
-            /* Szoveg szerkesztese */
-            case SDL_TEXTEDITING:
-                strcpy(composition, event.edit.text);
-                break;
-
-            case SDL_QUIT:
-                /* visszatesszuk a sorba ezt az eventet, mert
-                 * sok mindent nem tudunk vele kezdeni */
-                SDL_PushEvent(&event);
-                kilep = true;
-                break;
+void handle_space(char* input, char* target, char* composition, SDL_Event event) {
+    if (event.key.keysym.sym == SDLK_SPACE) {
+        if (strcmp(input, target)==0) {
+            input[0] = '\0';
+            composition[0] = '\0';
+            SDL_StopTextInput();
+            SDL_Event next;
+            next.type = NEXT_WORD;
+            SDL_PushEvent(&next);
         }
     }
-
-    /* igaz jelzi a helyes beolvasast; = ha enter miatt allt meg a ciklus */
-    SDL_StopTextInput();
-    return next;
 }
 
-
-void clear_window(SDL_Color background, SDL_Renderer* renderer) {
-    boxRGBA(renderer, 0, 0, SZELES, MAGAS, 0, 0, 0, 255);
+void handle_textinput(char* input, char* composition, SDL_Event event) {
+    /* A feldolgozott szoveg bemenete */
+    if (strlen(input) + strlen(event.text.text) < HOSSZ) {
+        strcat(input, event.text.text);
+    }
+    printf("Input: %s\n", input);
+    /* Az eddigi szerkesztes torolheto */
+    composition[0] = '\0';
 }
-
-//SDL_Color white = {0, 0, 0};
-//SDL_Color light_ded = {255, 102, 102};
-//SDL_Color dark_red = {135, 0, 0};
 
 int main(int argc, char *argv[]) {
     srand(time(0));
@@ -411,16 +370,53 @@ int main(int argc, char *argv[]) {
     print_text(text);
     char* szoveg = text_to_string(text);
     SDL_Rect input_box = {20, MAGAS/2, SZELES-40, 40};
-    char input[HOSSZ];
-    for (int i=0; i<text.word_count; i++) {
-        render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
-        input_target_text(input, HOSSZ, input_box, feher, fekete, font, renderer, text.words[i]);
-    }
-
+    char input[HOSSZ] = "";
+    int i=0;
     SDL_RenderPresent(renderer);
     SDL_Event event;
-    while (SDL_WaitEvent(&event) && event.type != SDL_QUIT) {
+    bool quit = false;
+    /* Ez tartalmazza az aktualis szerkesztest */
+    char composition[SDL_TEXTEDITINGEVENT_TEXT_SIZE];
+    /* Ezt a kirajzolas kozben hasznaljuk */
+    char textandcomposition[HOSSZ + SDL_TEXTEDITINGEVENT_TEXT_SIZE + 1];
+    SDL_StartTextInput();
+    while (SDL_WaitEvent(&event) && !quit && i <text.word_count) {
+        char* target = text.words[i];
+        render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
+        render_input(input, input_box, font, renderer, composition, textandcomposition);
+        SDL_RenderPresent(renderer);
+        switch (event.type) {
+            /* Kulonleges karakter */
+             case SDL_KEYDOWN:
+                 if (event.key.keysym.sym == SDLK_BACKSPACE) {
+                    handle_backspace(input);
+                 }
+                 if (event.key.keysym.sym == SDLK_SPACE) {
+                    handle_space(input, target, composition, event);
+                 }
+                 break;
+            case SDL_TEXTINPUT:
+                /* A feldolgozott szoveg bemenete */
+                handle_textinput(input, composition, event);
+                break;
+            /* Szoveg szerkesztese */
+            case SDL_TEXTEDITING:
+                strcpy(composition, event.edit.text);
+                break;
+            case NEXT_WORD:
+                i++;
+                SDL_StartTextInput();
+                break;
+            case SDL_QUIT:
+                /* visszatesszuk a sorba ezt az eventet, mert
+                 * sok mindent nem tudunk vele kezdeni */
+                SDL_PushEvent(&event);
+                quit = true;
+                break;
+        }
+
     }
+    SDL_StopTextInput();
     /*free everything*/
     free(szoveg);
     free_textarray(&TheLordOfTheRings);
