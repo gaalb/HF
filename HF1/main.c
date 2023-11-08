@@ -9,8 +9,13 @@
 
 #define SZELES 1000
 #define MAGAS 600
-#define FONT "LiberationSerif-Regular.ttf"
+#define FONT "../arial.ttf"
 #define HOSSZ 100
+
+SDL_Color fekete = {0, 0, 0};
+SDL_Color feher = {255, 255, 255};
+SDL_Color zold = {0, 255, 0};
+SDL_Color vilagoskek = {120, 150, 255};
 
 typedef struct Text {
     int word_count;
@@ -145,7 +150,7 @@ char* text_to_string(const Text text) {
     return str;
 }
 
-void sdl_init(int szeles, int magas, const char* tipus, SDL_Window** pwindow, SDL_Renderer** prenderer, TTF_Font** pfont) {
+void sdl_init(int szeles, int magas, const char* tipus, SDL_Window** pwindow, SDL_Renderer** prenderer, TTF_Font** pfont, TTF_Font** punderlined) {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         SDL_Log("Nem indithato az SDL: %s", SDL_GetError());
         exit(1);
@@ -166,9 +171,16 @@ void sdl_init(int szeles, int magas, const char* tipus, SDL_Window** pwindow, SD
         SDL_Log("Nem sikerult megnyitni a fontot! %s\n", TTF_GetError());
         exit(1);
     }
+    TTF_Font *underlined = TTF_OpenFont(tipus, 32);
+    if (underlined == NULL) {
+        SDL_Log("Nem sikerult megnyitni a fontot! %s\n", TTF_GetError());
+        exit(1);
+    }
+    TTF_SetFontStyle(underlined, TTF_STYLE_UNDERLINE);
     *pwindow = window;
     *prenderer = renderer;
     *pfont = font;
+    *punderlined = underlined;
     #ifdef __WIN32__
     freopen("CON", "w", stdout);
     freopen("CON", "w", stderr);
@@ -215,8 +227,63 @@ SDL_Rect render_text_wrapped(char* text, TTF_Font* font, SDL_Color color, SDL_Re
     return rect;
 }
 
+int match_len(char* target, char* input) {
+    int l=0;
+    while (target[l] != '\0' && input[l] != '\0') {
+        if (target[l] == input[l]) {
+            l++;
+        } else {
+            break;
+        }
+    }
+    return l;
+}
+
+void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Renderer* renderer, int x, int y, int w, int target_index, char* input) {
+    boxRGBA(renderer, 0, 0, SZELES, MAGAS, vilagoskek.r, vilagoskek.g, vilagoskek.b, 255);
+    int right_edge = x+w;
+    int left_edge = x;
+    SDL_Color fg;
+    SDL_Rect rect;
+    SDL_Surface* word_s;
+    for (int i=0; i<text.word_count; i++) {
+        char* target = text.words[i];
+        int target_len = strlen(target);
+        char* display_str = (char*) malloc(sizeof(char) * (target_len + 2));
+        strcpy(display_str, target);
+        display_str[target_len] = ' ';
+        display_str[target_len+1] = '\0';
+        if (i < target_index){
+            fg = zold;
+            word_s = TTF_RenderUTF8_Blended(font, display_str, fg);
+        } else if (i == target_index) {
+            fg=zold;
+            word_s = TTF_RenderUTF8_Blended(underlined, display_str, fg);
+        } else {
+            fg = fekete;
+            word_s = TTF_RenderUTF8_Blended(font, display_str, fg);
+        }
+        SDL_Texture* word_t = SDL_CreateTextureFromSurface(renderer, word_s);
+        rect.w = word_s->w;
+        rect.h = word_s->h;
+        if (x+word_s->w > right_edge) {
+            y += word_s -> h;
+            x = left_edge;
+        }
+        rect.x = x;
+        x += rect.w;
+        rect.y = y;
+        SDL_RenderCopy(renderer, word_t, NULL, &rect);
+        SDL_FreeSurface(word_s);
+        SDL_DestroyTexture(word_t);
+        free(display_str);
+    }
+
+}
+
+
 bool input_target_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, SDL_Color szoveg, TTF_Font *font, SDL_Renderer *renderer, char* target) {
-    printf("%s\n", target);
+    printf("target: %s, len: %d\n", target, (int)strlen(target));
     /* Ez tartalmazza az aktualis szerkesztest */
     char composition[SDL_TEXTEDITINGEVENT_TEXT_SIZE];
     composition[0] = '\0';
@@ -288,6 +355,7 @@ bool input_target_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color ha
                 if (event.key.keysym.sym == SDLK_SPACE) {
                     if (strcmp(dest, target)==0) {
                         next = true;
+                        printf("dest: %s, len: %d\n", dest, (int)strlen(dest));
                     }
                 }
                 break;
@@ -297,6 +365,7 @@ bool input_target_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color ha
                 if (strlen(dest) + strlen(event.text.text) < hossz) {
                     strcat(dest, event.text.text);
                 }
+                printf("match len: %d\n", match_len(target, dest));
 
                 /* Az eddigi szerkesztes torolheto */
                 composition[0] = '\0';
@@ -322,39 +391,29 @@ bool input_target_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color ha
 }
 
 
+void clear_window(SDL_Color background, SDL_Renderer* renderer) {
+    boxRGBA(renderer, 0, 0, SZELES, MAGAS, 0, 0, 0, 255);
+}
+
+//SDL_Color white = {0, 0, 0};
+//SDL_Color light_ded = {255, 102, 102};
+//SDL_Color dark_red = {135, 0, 0};
+
 int main(int argc, char *argv[]) {
     srand(time(0));
     SDL_Window *window;
     SDL_Renderer *renderer;
     TTF_Font *font;
-    sdl_init(SZELES, MAGAS, FONT ,&window, &renderer, &font);
+    TTF_Font *underlined;
+    sdl_init(SZELES, MAGAS, FONT ,&window, &renderer, &font, &underlined);
     TextArray TheLordOfTheRings = parse_file("hobbit_short.txt");
-    /*Do whatever we want:*/
     Text text = TheLordOfTheRings.texts[rand()%TheLordOfTheRings.text_count];
     print_text(text);
     char* szoveg = text_to_string(text);
-
-
-    SDL_Color fekete = {0, 0, 0};
-    SDL_Color feher = {255, 255, 255};
-    SDL_Color zold = {0, 255, 0};
-
-    /* hatter */
-    for (int i = 0; i < 20000; ++i)
-        filledCircleRGBA(renderer, rand() % SZELES, rand() % MAGAS,
-                         10 + rand() % 5, rand() % 256, rand() % 256, rand() % 256, 64);
-
-
-    char zold_szoveg[100];
-    strncpy(zold_szoveg, szoveg, 100);
-    zold_szoveg[100] = '\0';
-    render_text_wrapped(szoveg, font, fekete, renderer, 20, 20, SZELES-20);
-    render_text_wrapped(zold_szoveg, font, zold, renderer, 20, 20, SZELES-20);
-    //rectangleRGBA(renderer, rect.x, rect.y, rect.x+rect.w, rect.y+rect.h, 255, 255, 255, 255);
-
     SDL_Rect input_box = {20, MAGAS/2, SZELES-40, 40};
     char input[HOSSZ];
     for (int i=0; i<text.word_count; i++) {
+        render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
         input_target_text(input, HOSSZ, input_box, feher, fekete, font, renderer, text.words[i]);
     }
 
