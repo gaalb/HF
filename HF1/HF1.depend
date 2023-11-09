@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1699483171 source:d:\prog\hf\hf1\main.c
+1699549432 source:d:\prog\hf\hf1\main.c
 	<SDL2/SDL2_gfxPrimitives.h>
 	<SDL2/SDL_ttf.h>
 	<math.h>

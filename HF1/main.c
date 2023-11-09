@@ -16,7 +16,9 @@
 SDL_Color fekete = {0, 0, 0};
 SDL_Color feher = {255, 255, 255};
 SDL_Color zold = {0, 255, 0};
-SDL_Color vilagoskek = {120, 150, 255};
+SDL_Color vilagos_kek = {120, 150, 255};
+SDL_Color vilagos_piros = {255, 114, 118};
+SDL_Color sotet_piros = {112, 57, 63};
 
 typedef struct Text {
     int word_count;
@@ -201,33 +203,6 @@ void sdl_close(SDL_Window **pwindow, SDL_Renderer **prenderer, TTF_Font **pfont)
     SDL_Quit();
 }
 
-void render_text(char* text, TTF_Font* font, SDL_Color color, SDL_Renderer* renderer, int x, int y) {
-    SDL_Surface* text_surface = TTF_RenderUTF8_Blended(font, text, color);
-    SDL_Texture* text_t = SDL_CreateTextureFromSurface(renderer, text_surface);
-    SDL_Rect rect;
-    rect.x = x;
-    rect.y = y;
-    rect.w = text_surface->w;
-    rect.h = text_surface->h;
-    SDL_RenderCopy(renderer, text_t, NULL, &rect);
-    SDL_FreeSurface(text_surface);
-    SDL_DestroyTexture(text_t);
-}
-
-SDL_Rect render_text_wrapped(char* text, TTF_Font* font, SDL_Color color, SDL_Renderer* renderer, int x, int y, int w) {
-    SDL_Surface* text_surface = TTF_RenderUTF8_Blended_Wrapped(font, text, color, w);
-    SDL_Texture* text_t = SDL_CreateTextureFromSurface(renderer, text_surface);
-    SDL_Rect rect;
-    rect.x = x;
-    rect.y = y;
-    rect.w = text_surface->w;
-    rect.h = text_surface->h;
-    SDL_RenderCopy(renderer, text_t, NULL, &rect);
-    SDL_FreeSurface(text_surface);
-    SDL_DestroyTexture(text_t);
-    return rect;
-}
-
 int match_len(char* target, char* input) {
     int l=0;
     while (target[l] != '\0' && input[l] != '\0') {
@@ -240,44 +215,100 @@ int match_len(char* target, char* input) {
     return l;
 }
 
+SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x, int y, SDL_Renderer* renderer) {
+    SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, str, color);
+    SDL_Rect rect;
+    rect.w = word_s->w;
+    rect.h = word_s->h;
+    rect.x = x;
+    rect.y = y;
+    x += rect.w;
+    SDL_Texture* word_t = SDL_CreateTextureFromSurface(renderer, word_s);
+    SDL_RenderCopy(renderer, word_t, NULL, &rect);
+    SDL_FreeSurface(word_s);
+    SDL_DestroyTexture(word_t);
+    return rect;
+}
+
+SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, TTF_Font* font, int x, int y, SDL_Renderer* renderer) {
+    SDL_Surface* word_s  = TTF_RenderUTF8_Shaded(font, str, color, background);
+    SDL_Rect rect;
+    rect.w = word_s->w;
+    rect.h = word_s->h;
+    rect.x = x;
+    rect.y = y;
+    x += rect.w;
+    SDL_Texture* word_t = SDL_CreateTextureFromSurface(renderer, word_s);
+    SDL_RenderCopy(renderer, word_t, NULL, &rect);
+    SDL_FreeSurface(word_s);
+    SDL_DestroyTexture(word_t);
+    return rect;
+}
+
 void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Renderer* renderer, int x, int y, int w, int target_index, char* input) {
-    boxRGBA(renderer, 0, 0, SZELES, MAGAS, vilagoskek.r, vilagoskek.g, vilagoskek.b, 255);
+    if (target_index > text.word_count)
+        return;
+    printf("Rendering for word %s\n", text.words[target_index]);
+    boxRGBA(renderer, 0, 0, SZELES, MAGAS, vilagos_kek.r, vilagos_kek.g, vilagos_kek.b, 255);
     int right_edge = x+w;
     int left_edge = x;
-    SDL_Color fg;
     SDL_Rect rect;
-    SDL_Surface* word_s;
-    for (int i=0; i<text.word_count; i++) {
-        char* target = text.words[i];
+    int i=0;
+    char* target;
+    char display_str[HOSSZ];
+    while (i<text.word_count) {
+        target = text.words[i];
         int target_len = strlen(target);
-        char* display_str = (char*) malloc(sizeof(char) * (target_len + 2));
-        strcpy(display_str, target);
-        display_str[target_len] = ' ';
-        display_str[target_len+1] = '\0';
-        if (i < target_index){
-            fg = zold;
-            word_s = TTF_RenderUTF8_Blended(font, display_str, fg);
-        } else if (i == target_index) {
-            fg=zold;
-            word_s = TTF_RenderUTF8_Blended(underlined, display_str, fg);
-        } else {
-            fg = fekete;
-            word_s = TTF_RenderUTF8_Blended(font, display_str, fg);
-        }
-        SDL_Texture* word_t = SDL_CreateTextureFromSurface(renderer, word_s);
-        rect.w = word_s->w;
-        rect.h = word_s->h;
+        SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, target, fekete);
         if (x+word_s->w > right_edge) {
             y += word_s -> h;
             x = left_edge;
         }
-        rect.x = x;
-        x += rect.w;
-        rect.y = y;
-        SDL_RenderCopy(renderer, word_t, NULL, &rect);
         SDL_FreeSurface(word_s);
-        SDL_DestroyTexture(word_t);
-        free(display_str);
+        if (i<target_index) {
+            /*Ha egy regebbi, mar jol kiirt szot renderelunk: a kiirando szo
+            a szo + szokoz*/
+            strcpy(display_str, target);
+            display_str[target_len] = ' ';
+            display_str[target_len+1] = '\0';
+            rect = render_string_blended(display_str, zold, font, x, y, renderer);
+            x += rect.w;
+            i++;
+        } else if (i == target_index) {
+            int input_len = strlen(input);
+            int green_len = match_len(target, input);
+            int red_len = green_len < target_len ? input_len - green_len : 0;
+            int black_len = input_len < target_len? target_len - input_len : 0;
+            if (green_len){
+                strcpy(display_str, target); //a helyesen beirt karakterek
+                display_str[green_len] = '\0';
+                rect = render_string_blended(display_str, zold, underlined, x, y, renderer);
+                x += rect.w;
+            }
+            if (red_len) { //a helytelenul beirt karakterek
+                strcpy(display_str, target+green_len);
+                display_str[red_len] = '\0';
+                rect = render_string_shaded(display_str, fekete, vilagos_piros, underlined, x, y, renderer);
+                x += rect.w;
+            }
+            if (black_len) { //a meg nem beirt karakterek
+                strcpy(display_str, target+green_len+red_len);
+                rect = render_string_blended(display_str, fekete, underlined, x, y, renderer);
+                x += rect.w;
+            }
+            strcpy(display_str, " ");
+            rect = render_string_blended(display_str, fekete, font, x, y, renderer);
+            x += rect.w;
+            i++;
+        } else {
+            strcpy(display_str, target);
+            display_str[target_len] = ' ';
+            display_str[target_len+1] = '\0';
+            rect = render_string_blended(display_str, fekete, font, x, y, renderer);
+            x += rect.w;
+            i++;
+        }
+
     }
 
 }
@@ -338,8 +369,6 @@ void handle_backspace(char* input) {
 void handle_space(char* input, char* target, char* composition, SDL_Event event) {
     if (event.key.keysym.sym == SDLK_SPACE) {
         if (strcmp(input, target)==0) {
-            input[0] = '\0';
-            composition[0] = '\0';
             SDL_StopTextInput();
             SDL_Event next;
             next.type = NEXT_WORD;
@@ -353,7 +382,6 @@ void handle_textinput(char* input, char* composition, SDL_Event event) {
     if (strlen(input) + strlen(event.text.text) < HOSSZ) {
         strcat(input, event.text.text);
     }
-    printf("Input: %s\n", input);
     /* Az eddigi szerkesztes torolheto */
     composition[0] = '\0';
 }
@@ -371,41 +399,54 @@ int main(int argc, char *argv[]) {
     char* szoveg = text_to_string(text);
     SDL_Rect input_box = {20, MAGAS/2, SZELES-40, 40};
     char input[HOSSZ] = "";
-    int i=0;
-    SDL_RenderPresent(renderer);
-    SDL_Event event;
-    bool quit = false;
     /* Ez tartalmazza az aktualis szerkesztest */
     char composition[SDL_TEXTEDITINGEVENT_TEXT_SIZE];
     /* Ezt a kirajzolas kozben hasznaljuk */
     char textandcomposition[HOSSZ + SDL_TEXTEDITINGEVENT_TEXT_SIZE + 1];
+    int i=0;
+    SDL_RenderPresent(renderer);
+    SDL_Event event;
+    bool quit = false;
     SDL_StartTextInput();
     while (SDL_WaitEvent(&event) && !quit && i <text.word_count) {
         char* target = text.words[i];
-        render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
-        render_input(input, input_box, font, renderer, composition, textandcomposition);
         SDL_RenderPresent(renderer);
         switch (event.type) {
             /* Kulonleges karakter */
              case SDL_KEYDOWN:
                  if (event.key.keysym.sym == SDLK_BACKSPACE) {
                     handle_backspace(input);
+                    render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
+                    render_input(input, input_box, font, renderer, composition, textandcomposition);
                  }
                  if (event.key.keysym.sym == SDLK_SPACE) {
                     handle_space(input, target, composition, event);
+                    render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
+                    render_input(input, input_box, font, renderer, composition, textandcomposition);
                  }
                  break;
             case SDL_TEXTINPUT:
                 /* A feldolgozott szoveg bemenete */
                 handle_textinput(input, composition, event);
+                render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
+                render_input(input, input_box, font, renderer, composition, textandcomposition);
                 break;
             /* Szoveg szerkesztese */
             case SDL_TEXTEDITING:
                 strcpy(composition, event.edit.text);
+                render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
+                render_input(input, input_box, font, renderer, composition, textandcomposition);
                 break;
             case NEXT_WORD:
                 i++;
+                if (i == text.word_count) {
+                    break;
+                }
                 SDL_StartTextInput();
+                input[0] = '\0';
+                composition[0] = '\0';
+                render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
+                render_input(input, input_box, font, renderer, composition, textandcomposition);
                 break;
             case SDL_QUIT:
                 /* visszatesszuk a sorba ezt az eventet, mert
