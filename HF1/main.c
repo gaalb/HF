@@ -259,6 +259,7 @@ void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Ren
     while (i<text.word_count) {
         target = text.words[i];
         int target_len = strlen(target);
+        int input_len = strlen(input);
         SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, target, fekete);
         if (x+word_s->w > right_edge) {
             y += word_s -> h;
@@ -275,7 +276,6 @@ void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Ren
             x += rect.w;
             i++;
         } else if (i == target_index) {
-            int input_len = strlen(input);
             int green_len = match_len(target, input);
             int red_len = green_len < target_len ? input_len - green_len : 0;
             int black_len = input_len < target_len? target_len - input_len : 0;
@@ -297,7 +297,11 @@ void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Ren
                 x += rect.w;
             }
             strcpy(display_str, " ");
-            rect = render_string_blended(display_str, fekete, font, x, y, renderer);
+            if (input_len > target_len) {
+                rect = render_string_shaded(display_str, fekete, vilagos_piros, font, x, y, renderer);
+            } else {
+                rect = render_string_blended(display_str, fekete, font, x, y, renderer);
+            }
             x += rect.w;
             i++;
         } else {
