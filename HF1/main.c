@@ -12,6 +12,8 @@
 #define FONT "../arial.ttf"
 #define HOSSZ 100
 #define NEXT_WORD SDL_USEREVENT+1
+#define CORRECT_EVENT SDL_USEREVENT+2
+#define WRONG_EVENT SDL_USEREVENT+3
 
 SDL_Color fekete = {0, 0, 0};
 SDL_Color feher = {255, 255, 255};
@@ -246,9 +248,6 @@ SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, 
 }
 
 void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Renderer* renderer, int x, int y, int w, int target_index, char* input) {
-    if (target_index > text.word_count)
-        return;
-    printf("Rendering for word %s\n", text.words[target_index]);
     boxRGBA(renderer, 0, 0, SZELES, MAGAS, vilagos_kek.r, vilagos_kek.g, vilagos_kek.b, 255);
     int right_edge = x+w;
     int left_edge = x;
@@ -284,6 +283,9 @@ void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Ren
                 display_str[green_len] = '\0';
                 rect = render_string_blended(display_str, zold, underlined, x, y, renderer);
                 x += rect.w;
+                if (!red_len) {
+                    vlineRGBA(renderer, x+2, y + 2, y + rect.h - 3, fekete.r, fekete.g, fekete.b, 192);
+                }
             }
             if (red_len) { //a helytelenul beirt karakterek
                 strcpy(display_str, target+green_len);
@@ -294,7 +296,11 @@ void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Ren
             if (black_len) { //a meg nem beirt karakterek
                 strcpy(display_str, target+green_len+red_len);
                 rect = render_string_blended(display_str, fekete, underlined, x, y, renderer);
+                if (!red_len) {
+                    vlineRGBA(renderer, x+2, y + 2, y + rect.h - 3, fekete.r, fekete.g, fekete.b, 192);
+                }
                 x += rect.w;
+            } else {
             }
             strcpy(display_str, " ");
             if (input_len > target_len) {
@@ -303,11 +309,42 @@ void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Ren
                 rect = render_string_blended(display_str, fekete, font, x, y, renderer);
             }
             x += rect.w;
+            red_len =  input_len - target_len - 1 > 0 ? input_len - target_len - 1 : 0;
             i++;
+            while (red_len) {
+                target = text.words[i];
+                target_len = strlen(target);
+                word_s = TTF_RenderUTF8_Blended(font, target, fekete);
+                if (x+word_s->w > right_edge) {
+                    y += word_s -> h;
+                    x = left_edge;
+                }
+                SDL_FreeSurface(word_s);
+                black_len = red_len > target_len + 1 ? 0 : target_len + 1 - red_len;
+                if (!black_len) {
+                    strcpy(display_str, target);
+                    strcat(display_str, " ");
+                    rect = render_string_shaded(display_str, fekete, vilagos_piros, font, x, y, renderer);
+                    x += rect.w;
+                    red_len = red_len - target_len - 1;
+                } else {
+                    strcpy(display_str, target);
+                    strcat(display_str, " ");
+                    display_str[red_len] = '\0';
+                    rect = render_string_shaded(display_str, fekete, vilagos_piros, font, x, y, renderer);
+                    x += rect.w;
+                    strcpy(display_str, target+red_len);
+                    strcat(display_str, " ");
+                    rect = render_string_blended(display_str, fekete, font, x, y, renderer);
+                    x += rect.w;
+                    red_len = 0;
+                }
+                i++;
+            }
+
         } else {
             strcpy(display_str, target);
-            display_str[target_len] = ' ';
-            display_str[target_len+1] = '\0';
+            strcat(display_str, " ");
             rect = render_string_blended(display_str, fekete, font, x, y, renderer);
             x += rect.w;
             i++;
@@ -317,12 +354,12 @@ void render_struct_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Ren
 
 }
 
-void render_input(char *input, SDL_Rect teglalap,TTF_Font *font, SDL_Renderer *renderer, char* composition, char* textandcomposition) {
+void render_input(char *input, SDL_Rect teglalap, SDL_Color input_color, TTF_Font *font, SDL_Renderer *renderer, char* composition, char* textandcomposition) {
     /* Max hasznalhato szelesseg */
     int maxw = teglalap.w - 2;
     int maxh = teglalap.h - 2;
     /* doboz kirajzolasa */
-    boxRGBA(renderer, teglalap.x, teglalap.y, teglalap.x + teglalap.w - 1, teglalap.y + teglalap.h - 1, feher.r, feher.g, feher.b, 255);
+    boxRGBA(renderer, teglalap.x, teglalap.y, teglalap.x + teglalap.w - 1, teglalap.y + teglalap.h - 1, input_color.r, input_color.g, input_color.b, 255);
     rectangleRGBA(renderer, teglalap.x, teglalap.y, teglalap.x + teglalap.w - 1, teglalap.y + teglalap.h - 1, fekete.r, fekete.g, fekete.b, 255);
     /* szoveg kirajzolasa */
     int w;
@@ -390,6 +427,15 @@ void handle_textinput(char* input, char* composition, SDL_Event event) {
     composition[0] = '\0';
 }
 
+SDL_Color input_color(char* target, char* input) {
+    int input_len = strlen(input);
+    if (match_len(target, input) == input_len) {
+        return feher;
+    } else {
+        return vilagos_piros;
+    }
+}
+
 int main(int argc, char *argv[]) {
     srand(time(0));
     SDL_Window *window;
@@ -421,25 +467,25 @@ int main(int argc, char *argv[]) {
                  if (event.key.keysym.sym == SDLK_BACKSPACE) {
                     handle_backspace(input);
                     render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
-                    render_input(input, input_box, font, renderer, composition, textandcomposition);
+                    render_input(input, input_box, input_color(target, input), font, renderer, composition, textandcomposition);
                  }
                  if (event.key.keysym.sym == SDLK_SPACE) {
                     handle_space(input, target, composition, event);
                     render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
-                    render_input(input, input_box, font, renderer, composition, textandcomposition);
+                    render_input(input, input_box, input_color(target, input), font, renderer, composition, textandcomposition);
                  }
                  break;
             case SDL_TEXTINPUT:
                 /* A feldolgozott szoveg bemenete */
                 handle_textinput(input, composition, event);
                 render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
-                render_input(input, input_box, font, renderer, composition, textandcomposition);
+                render_input(input, input_box, input_color(target, input), font, renderer, composition, textandcomposition);
                 break;
             /* Szoveg szerkesztese */
             case SDL_TEXTEDITING:
                 strcpy(composition, event.edit.text);
                 render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
-                render_input(input, input_box, font, renderer, composition, textandcomposition);
+                render_input(input, input_box, input_color(target, input), font, renderer, composition, textandcomposition);
                 break;
             case NEXT_WORD:
                 i++;
@@ -450,8 +496,17 @@ int main(int argc, char *argv[]) {
                 input[0] = '\0';
                 composition[0] = '\0';
                 render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
-                render_input(input, input_box, font, renderer, composition, textandcomposition);
+                render_input(input, input_box, input_color(target, input), font, renderer, composition, textandcomposition);
                 break;
+                /*
+            case WRONG_EVENT:
+                input_color = vilagos_piros;
+                render_input(input, input_box, input_color(target, input), font, renderer, composition, textandcomposition);
+                break;
+            case CORRECT_EVENT:
+                input_color = feher;
+                render_input(input, input_box, input_color(target, input), font, renderer, composition, textandcomposition);
+                break;*/
             case SDL_QUIT:
                 /* visszatesszuk a sorba ezt az eventet, mert
                  * sok mindent nem tudunk vele kezdeni */
