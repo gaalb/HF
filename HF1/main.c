@@ -57,34 +57,21 @@ void free_textarray(TextArray* textarray) {
     textarray->texts = NULL;
 }
 
-/*This function reads a word from the provided file, dynamically
-allocates space for it in memory, copies the word to the place in
-memory and returns the pointer. Note that it is the responsibility
-of the caller to free that memory.*/
-char* read_word_from_file(FILE* file) {
-    int len=0;
-    char *word = (char*) malloc(sizeof(char)*1);
-    if (word == NULL) {
-        return NULL;
-    }
-    word[0] = '\0';
+char* recursive_read(int n, FILE* file) {
     char c;
-    /*Read characters until we hit a newline or a space, and
-    after each character, make a longer array to store the word in.*/
-    while (fscanf(file, "%c", &c) == 1 && c != ' ' && c != '\n') {
-        char *newword = (char*) malloc(sizeof(char) * (len+2));
-        if (newword == NULL) {
-            free(word);
-            return NULL;
-        }
-        strcpy(newword, word);
-        free(word);
-        word = newword;
-        word[len] = c;
-        word[len+1] = '\0';
-        len++;
+    char* str;
+    if (fscanf(file, "%c", &c) == 1 && c != ' ' && c != '\n') {
+        str = recursive_read(n+1, file);
+        str[n] = c;
+    } else {
+        str = (char*) malloc(sizeof(char) *(n+1));
+        str[n] = '\0';
     }
-    return word;
+    return str;
+}
+
+char* read_word_from_file(FILE* file) {
+    return recursive_read(0, file);
 }
 
 /*This function reads a piece of text from the provided file,
@@ -119,25 +106,27 @@ allocated member it has (texts), use free_textarray*/
 TextArray parse_file(char filename[]) {
     FILE* file;
     file = fopen(filename, "r");
-    TextArray TheLordOfTheRings;
+    TextArray textarray;
     int text_count;
     if (file != NULL && fscanf(file, "TextCount: %d", &text_count) == 1) {
-        TheLordOfTheRings.text_count = text_count;
-        TheLordOfTheRings.texts = (Text*) malloc(sizeof(Text)*text_count);
-        if (TheLordOfTheRings.texts == NULL) {
-            printf("Couldn't allocate memory for TheLordOfTheRings");
-            TheLordOfTheRings.text_count = 0;
+        textarray.text_count = text_count;
+        textarray.texts = (Text*) malloc(sizeof(Text)*text_count);
+        if (textarray.texts == NULL) {
+            printf("Couldn't allocate memory for TextArray");
+            textarray.text_count = 0;
+            free_textarray(&textarray);
         } else {
             for (int i=0; i<text_count; i++) {
-                TheLordOfTheRings.texts[i] = read_text_from_file(file);
+                textarray.texts[i] = read_text_from_file(file);
             }
         }
     } else {
         perror("Couldn't open file, or file was wrong format.");
     }
     fclose(file);
-    return TheLordOfTheRings;
+    return textarray;
 }
+
 
 /*TODO: this sucks?*/
 char* text_to_string(const Text text) {
