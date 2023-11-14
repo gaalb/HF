@@ -12,7 +12,7 @@ def clean_string(input_string):
 
 
 def extract_chunks(input, output_long, output_short):
-    allowed_characters = ['.', ",", "!", "?", "-", ";", " ", "'", "\""]
+    allowed_characters = ['.', ",", "!", "?", "-", ";", " ", "'"]
     with open(input, 'r', encoding='utf-8') as input_file:
         content = input_file.read()
         content = clean_string(content)
@@ -22,12 +22,12 @@ def extract_chunks(input, output_long, output_short):
     for i in range(len(content)):
         char = content[i]
         if len(chunk) == 0:
-            if char.isupper() or (char == '"' and content[i+1].isupper()):
+            if char.isupper():
                 chunk += char
         else:
             if char in allowed_characters or char.isalpha():
                 chunk += char
-                if len(chunk) > 250 and (chunk.count('"')) % 2 == 0 and char in '.!?"':
+                if len(chunk) > 100 and char in ".!?":
                     # header = f"Len: {len(chunk)}, WordLen: {max(len(word) for word in chunk.split())}\n"
                     header = f"WordCount: {len(chunk.split())}\n"
                     chunks.append(header + chunk)
@@ -46,7 +46,7 @@ def extract_chunks(input, output_long, output_short):
 
 if __name__ == "__main__":
     input_filename = 'hobbit.txt'  # Replace with your input file
-    output_long = '../HF1/hobbit_long.txt'  # Replace with your output file
-    output_short = '../HF1/hobbit_short.txt'
+    output_long = '../HF3/hobbit_long.txt'  # Replace with your output file
+    output_short = '../HF3/hobbit_short.txt'
     extract_chunks(input_filename, output_long, output_short)
 

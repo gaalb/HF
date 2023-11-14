@@ -443,13 +443,11 @@ int main(int argc, char *argv[]) {
     /* Ezt a kirajzolas kozben hasznaljuk */
     char textandcomposition[HOSSZ + SDL_TEXTEDITINGEVENT_TEXT_SIZE + 1];
     int i=0;
-    SDL_RenderPresent(renderer);
     SDL_Event event;
     bool quit = false;
     SDL_StartTextInput();
     while (SDL_WaitEvent(&event) && !quit && i <text.word_count) {
         char* target = text.words[i];
-        SDL_RenderPresent(renderer);
         switch (event.type) {
             /* Kulonleges karakter */
              case SDL_KEYDOWN:
@@ -487,15 +485,6 @@ int main(int argc, char *argv[]) {
                 render_struct_Text(text, font, underlined, renderer, 20, 20, SZELES-30, i, input);
                 render_input(input, input_box, input_color(target, input), font, renderer, composition, textandcomposition);
                 break;
-                /*
-            case WRONG_EVENT:
-                input_color = vilagos_piros;
-                render_input(input, input_box, input_color(target, input), font, renderer, composition, textandcomposition);
-                break;
-            case CORRECT_EVENT:
-                input_color = feher;
-                render_input(input, input_box, input_color(target, input), font, renderer, composition, textandcomposition);
-                break;*/
             case SDL_QUIT:
                 /* visszatesszuk a sorba ezt az eventet, mert
                  * sok mindent nem tudunk vele kezdeni */
@@ -503,6 +492,7 @@ int main(int argc, char *argv[]) {
                 quit = true;
                 break;
         }
+        SDL_RenderPresent(renderer);
 
     }
     SDL_StopTextInput();
