@@ -219,12 +219,13 @@ SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, 
     return rect;
 }
 
-int get_cursor_index(Text text, int target_index, int input_len) {
+int get_cursor_index(Text text, int target_index, int input_len, int* cursor_len) {
     int target_len = strlen(text.words[target_index]);
     while (input_len > target_len+1 && target_index < text.word_count-1) {
         target_index++;
         target_len += strlen(text.words[target_index])+1;
     }
+    *cursor_len = input_len - target_len + strlen(text.words[target_index]);
     return target_index;
 }
 
@@ -256,6 +257,26 @@ void clear_screen(SDL_Renderer* renderer, SDL_Color color) {
     boxRGBA(renderer, 0, 0, SZELES, MAGAS, color.r, color.g, color.b, 255);
 }
 
+void render_cursor(Text text, SDL_Rect* word_rects, TTF_Font* font, int cursor_index, int cusor_len, SDL_Renderer* renderer) {
+    SDL_Color fekete = {0, 0, 0};
+    SDL_Rect rect = word_rects[cursor_index];
+    char display_str[HOSSZ];
+    char *word = text.words[cursor_index];
+    int x1, x2, y1, y2;
+    if (cusor_len) {
+        strcpy(display_str, word);
+        strcat(display_str, " ");
+        display_str[cusor_len] = '\0'; //így nem kell hibakezelni, automatikusan kibővül egy space-el, ha szükséges
+        SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, display_str, fekete);
+        x1 = rect.x +  (word_s->w) - 1;
+    } else {
+        x1 = rect.x - 1;
+    }
+    x2 = x1 + 2;
+    y1 = rect.y;
+    y2 = y1 + rect.h;
+    boxRGBA(renderer, x1, y1, x2, y2, fekete.r, fekete.g, fekete.b, 255);
+}
 
 void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word_rects, SDL_Renderer* renderer, SDL_Color color1, SDL_Color color2, SDL_Color color3, int target_index, char* input) {
     char* word;
@@ -263,7 +284,9 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
     char display_str[HOSSZ];
     int input_len = strlen(input);
     int target_len = strlen(target);
-    int cursor_index = get_cursor_index(text, target_index, input_len);
+    int cursor_len = 0;
+    int cursor_index = get_cursor_index(text, target_index, input_len, &cursor_len);
+    render_cursor(text, word_rects, font, cursor_index, cursor_len, renderer);
     SDL_Rect rect;
     int i;
     for (i=0; i<target_index; i++) {
@@ -308,27 +331,33 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
         rect = render_string_blended(display_str, color1, underlined, x, y, renderer);
         x += rect.w;
     }
+    if (red_len) { //adjunk hozzá egy space-t
+        rect = word_rects[i];
+        red_len--;
+        SDL_Rect space_rect;
+        space_rect.x = x;
+        space_rect.y = y;
+        space_rect.w = rect.x + rect.w - x;
+        space_rect.h = rect.h;
+        render_string_to_rect_shaded(" ", color1, color3, font, space_rect, renderer);
+    }
     if (i < text.word_count-1) {
         i++;
-    }
-    if (red_len) {
-        red_len--;
-        rect = word_rects[i];
-        word = text.words[i];
-        int x2 = rect.x < x ? x + 8 : rect.x; //space width ~ 8
-        int y2 = y + rect.h;
-        boxRGBA(renderer, x, y,x2, y2, color3.r, color3.g, color3.b, 255);
+    } else {
+        red_len = 0;
     }
     while (red_len) {
+        rect = word_rects[i];
+        word = text.words[i];
         int word_len = strlen(word);
         if (red_len > word_len) { //vagyis nem lesz benne fekete
             strcpy(display_str, word);
             strcat(display_str, " ");
             render_string_to_rect_shaded(display_str, color1, color3, font, rect, renderer);
-            red_len -= (word_len - 1);
+            red_len -= (word_len + 1);
         } else {
             strcpy(display_str, word);
-            display_str[red_len] = '\0';
+            display_str[red_len] ='\0';
             x = rect.x;
             y = rect.y;
             rect = render_string_shaded(display_str, color1, color3, font, x, y, renderer);
@@ -340,8 +369,6 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
             red_len = 0;
         }
         i++;
-        word = text.words[i];
-        rect = word_rects[i];
     }
     for (i=cursor_index+1; i<text.word_count; i++) {
         //a még nem begépelt szavakat feketével írjuk ki
@@ -370,6 +397,7 @@ int main(int argc, char *argv[]) {
     //SDL_Color sotet_piros = {112, 57, 63};
     TextArray TheLordOfTheRings = parse_file("hobbit_short.txt");
     Text text = TheLordOfTheRings.texts[rand()%TheLordOfTheRings.text_count];
+    //Text text = TheLordOfTheRings.texts[30];
     SDL_Rect input_box = {20, MAGAS/2, SZELES-40, 40};
     char input[HOSSZ] = "";
     char composition[SDL_TEXTEDITINGEVENT_TEXT_SIZE];
