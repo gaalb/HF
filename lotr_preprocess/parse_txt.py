@@ -12,7 +12,7 @@ def clean_string(input_string):
 
 
 def extract_chunks(input, output_long, output_short):
-    allowed_characters = ['.', ",", "!", "?", "-", ";", " ", "'"]
+    allowed_characters = ['.', ",", "!", "?", ";", " ", "'"]
     with open(input, 'r', encoding='utf-8') as input_file:
         content = input_file.read()
         content = clean_string(content)

@@ -1,5 +1,16 @@
 #ifndef TEXT_H
 #define TEXT_H
+#include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
+#include <SDL2/SDL_ttf.h>
+#include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include "debugmalloc.h"
+#include "constants.h"
+
 //sztringek dinamikus tömbje
 typedef struct Text {
     int word_count;

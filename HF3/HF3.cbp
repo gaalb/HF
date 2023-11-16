@@ -46,9 +46,14 @@
 			<Add library="dxguid" />
 			<Add directory="C:/Program Files/CodeBlocks/MinGW/lib" />
 		</Linker>
+		<Unit filename="debugmalloc.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="text.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="text.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

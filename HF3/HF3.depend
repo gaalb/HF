@@ -384,15 +384,48 @@
 	<process.h>
 	<unistd.h>
 
-1699623913 d:\prog\hf\hf3\text.h
-
-1700005626 source:d:\prog\hf\hf3\main.c
+1700152354 d:\prog\hf\hf3\text.h
+	<SDL2/SDL.h>
 	<SDL2/SDL2_gfxPrimitives.h>
 	<SDL2/SDL_ttf.h>
 	<math.h>
 	<stdlib.h>
 	<stdio.h>
+	<string.h>
 	<time.h>
 	"debugmalloc.h"
+	"constants.h"
+
+1700156079 source:d:\prog\hf\hf3\main.c
+	<SDL2/SDL2_gfxPrimitives.h>
+	<SDL2/SDL_ttf.h>
+	<math.h>
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+	<time.h>
+	"debugmalloc.h"
+	"text.h"
+	"custom_renders.h"
+	"constants.h"
+
+1700154622 d:\prog\hf\hf3\custom_renders.h
+	<SDL2/SDL.h>
+	<SDL2/SDL2_gfxPrimitives.h>
+	<SDL2/SDL_ttf.h>
+	<string.h>
+	"custom_renders.h"
+	"constants.h"
+	"text.h"
+
+1700152940 d:\prog\hf\hf3\constants.h
+
+1700155573 source:d:\prog\hf\hf3\custom_renders.c
+	<SDL2/SDL.h>
+	<SDL2/SDL2_gfxPrimitives.h>
+	<SDL2/SDL_ttf.h>
+	<string.h>
+	"custom_renders.h"
+	"constants.h"
 	"text.h"
 
