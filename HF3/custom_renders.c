@@ -285,18 +285,29 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
 
 }
 
+//kirajzol egy kocsi ábrát
 void render_car(SDL_Renderer* renderer, SDL_Color color1, SDL_Color color2, int x, int y, int w, int h) {
-    /*
-    filledCircleRGBA(renderer, x+w/4, y+h*4/5, h/5, color1.r, color1.g, color1.b, 255); //bal kerék
-    filledCircleRGBA(renderer, x+w/4*3, y+h*4/5, h/5, color1.r, color1.g, color1.b, 255); //jobb kerék
-    boxRGBA(renderer, x, y+h*2/5, x+w, y+h*4/5, color1.r, color1.g, color1.g, 255); //test
-    */
     Sint16 vx[8] = {x, x, x+w/8, x+w*3/8, x+w*5/8, x+w*7/8, x+w, x+w};
     Sint16 vy[8]= {y+h*4/5, y+h*2/5, y+h*2/5, y, y, y+h*2/5, y+h*2/5, y+h*4/5};
-    filledPolygonRGBA(renderer, vx, vy, 8, color1.r, color1.g, color1.b, 255);
-    polygonRGBA(renderer, vx, vy, 8, color2.r, color2.g, color2.b, 255);
+    filledPolygonRGBA(renderer, vx, vy, 8, color1.r, color1.g, color1.b, 255); //test
+    polygonRGBA(renderer, vx, vy, 8, color2.r, color2.g, color2.b, 255); //test körvonal
     filledCircleRGBA(renderer, x+w/4, y+h*4/5, h/5, color1.r, color1.g, color1.b, 255); //bal kerék
-    circleRGBA(renderer, x+w/4, y+h*4/5, h/5, color2.r, color2.g, color2.b, 255); //bal kerék
+    filledCircleRGBA(renderer, x+w/4, y+h*4/5, h/10, color2.r, color2.g, color2.b, 255); //bal kerék tengely
+    circleRGBA(renderer, x+w/4, y+h*4/5, h/5, color2.r, color2.g, color2.b, 255); //bal kerék körvonal
     filledCircleRGBA(renderer, x+w/4*3, y+h*4/5, h/5, color1.r, color1.g, color1.b, 255); //jobb kerék
-    circleRGBA(renderer, x+w/4*3, y+h*4/5, h/5, color2.r, color2.g, color2.b, 255); //jobb kerék
+    filledCircleRGBA(renderer, x+w/4*3, y+h*4/5, h/10, color2.r, color2.g, color2.b, 255); //jobb kerék tengely
+    circleRGBA(renderer, x+w/4*3, y+h*4/5, h/5, color2.r, color2.g, color2.b, 255); //jobb kerék körvonal
+    //hatso ablak:
+    Sint16 vx_hablak[3] = {x+w*1.7/8, x+w*3.25/8, x+w*3.25/8};
+    Sint16 vy_hablak[3] = {y+h*1.75/5, y+h*0.25/5, y+h*1.75/5};
+    filledPolygonRGBA(renderer, vx_hablak, vy_hablak, 3, color2.r, color2.g, color2.g, 255);
+    //kozepso ablak:
+    Sint16 vx_kablak[4] = {x+w*3.4/8, x+w*4.6/8, x+w*4.6/8, x+w*3.4/8};
+    Sint16 vy_kablak[4] = {y+h*0.25/5, y+h*0.25/5, y+h*1.75/5, y+h*1.75/5};
+    filledPolygonRGBA(renderer, vx_kablak, vy_kablak, 4, color2.r, color2.g, color2.g, 255);
+    //elso ablak:
+    Sint16 vx_eablak[3] = {x+w*4.75/8, x+w*6.3/8, x+w*4.75/8,};
+    Sint16 vy_eablak[3] = {y+h*0.25/5, y+h*1.75/5, y+h*1.75/5};
+    filledPolygonRGBA(renderer, vx_eablak, vy_eablak, 3, color2.r, color2.g, color2.g, 255);
+
 }

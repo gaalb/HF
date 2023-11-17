@@ -117,6 +117,12 @@ void handle_textinput(char* input, char* composition, SDL_Event event) {
     composition[0] = '\0';
 }
 
+bool in_rect(SDL_Rect rect, int x, int y) {
+    bool X = (x >= rect.x) && (x <= rect.x + rect.w);
+    bool Y = (y >= rect.y) && (y <= rect.y + rect.h);
+    return X && Y;
+}
+
 int main(int argc, char *argv[]) {
     srand(time(0)); //inicializáljuk a randomszám generátort
     SDL_Window *window;
@@ -144,9 +150,17 @@ int main(int argc, char *argv[]) {
     SDL_StartTextInput();
     SDL_Event event;
     bool draw = true;
+    SDL_Rect gomb = {SZELES/2, MAGAS*2/3, SZELES/10, MAGAS/10};
+
     while (SDL_WaitEvent(&event) && !quit && i <text.word_count) {
         char* target = text.words[i];
         switch (event.type) {
+            case SDL_MOUSEBUTTONDOWN:
+                if (event.button.button == SDL_BUTTON_LEFT && in_rect(gomb, event.button.x, event.button.y)) {
+                    quit = true;
+                }
+                break;
+
             /* Kulonleges karakter */
              case SDL_KEYDOWN:
                  if (event.key.keysym.sym == SDLK_BACKSPACE) {
@@ -191,10 +205,13 @@ int main(int argc, char *argv[]) {
         }
         if (draw) {
             clear_screen(renderer, vilagos_kek);
-            render_Text(text, font, underlined, word_rects, renderer, fekete, zold, vilagos_piros, i, input);
             render_input(input, input_box, input_color(target, input, feher, vilagos_piros), font, renderer, composition, textandcomposition);
-            render_car(renderer, sotet_piros, fekete, 40+(SZELES-110)*i/text.word_count, MAGAS-100, 150, 75);
+            render_Text(text, font, underlined, word_rects, renderer, fekete, zold, vilagos_piros, i, input);
+            render_car(renderer, sotet_piros, fekete, MARGO+(SZELES-KOCSI_W-MARGO)*i/text.word_count, MAGAS-KOCSI_H, KOCSI_W, KOCSI_H);
+            boxRGBA(renderer, gomb.x, gomb.y, gomb.x+gomb.w, gomb.y+gomb.h, 255, 0, 0, 255);
+            render_string_to_rect_blended("QUIT", fekete, font, gomb, renderer);
             SDL_RenderPresent(renderer);
+            draw = false;
         }
 
         SDL_RenderPresent(renderer);

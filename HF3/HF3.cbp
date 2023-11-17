@@ -46,6 +46,11 @@
 			<Add library="dxguid" />
 			<Add directory="C:/Program Files/CodeBlocks/MinGW/lib" />
 		</Linker>
+		<Unit filename="constants.h" />
+		<Unit filename="custom_renders.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="custom_renders.h" />
 		<Unit filename="debugmalloc.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
