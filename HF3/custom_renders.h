@@ -13,7 +13,7 @@ char* add_space(char* s1, char* s2);
 
 int match_len(char* target, char* input);
 
-SDL_Color input_color(char* target, char* input, SDL_Color color1, SDL_Color color2);
+bool input_correct(char* target, char* input);
 
 void render_input(char *input, SDL_Rect teglalap, SDL_Color input_color, TTF_Font *font, SDL_Renderer *renderer, char* composition, char* textandcomposition);
 
@@ -27,7 +27,7 @@ SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, 
 
 int get_cursor_index(Text text, int target_index, int input_len, int* cursor_len);
 
-SDL_Rect* calculate_Rects(Text text, TTF_Font* font, int x, int y, int w, SDL_Color color);
+SDL_Rect* calculate_Rects(Text text, TTF_Font* font, int x, int y, int w) ;
 
 void clear_screen(SDL_Renderer* renderer, SDL_Color color);
 

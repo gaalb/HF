@@ -25,15 +25,9 @@ int match_len(char* target, char* input) {
     return l;
 }
 
-/*Megadja, milyen színûre kell kiszinezni a beviteli szövegdobozt: ha minden
-begépelt karakter helyes, akkor fehérre, ellenkezõ esetben pirosra*/
-SDL_Color input_color(char* target, char* input, SDL_Color color1, SDL_Color color2) {
+bool input_correct(char* target, char* input) {
     int input_len = strlen(input);
-    if (match_len(target, input) == input_len) {
-        return color1;
-    } else {
-        return color2;
-    }
+    return match_len(target, input) == input_len;
 }
 
 /*kirajzolja a szövegdobozt, ahova a bemenetet gépeljük, a benne lévõ szöveggel együtt*/
@@ -135,7 +129,8 @@ x: a szövegdoboz bal széle
 y: a szövegdoboz teteje
 w: a szövegdoboz szélessége
 a szövegdoboz magassága abból dõl el, hány sorba fog kiférni a szöveg*/
-SDL_Rect* calculate_Rects(Text text, TTF_Font* font, int x, int y, int w, SDL_Color color) {
+SDL_Rect* calculate_Rects(Text text, TTF_Font* font, int x, int y, int w) {
+    SDL_Color color = {0, 0, 0};
     int word_count = text.word_count;
     SDL_Rect* word_rects = (SDL_Rect*) malloc(word_count*sizeof(SDL_Rect));
     int right_edge = x+w;

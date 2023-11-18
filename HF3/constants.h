@@ -9,5 +9,7 @@
 #define KOCSI_H 100
 #define FONT "LiberationSerif-Regular.ttf"
 #define NEXT_WORD_EVENT SDL_USEREVENT+1
+#define GAME_VIEW_CHANGED_EVENT SDL_USEREVENT+2
+#define S_TIMER_TICK SDL_USEREVENT+3
 
 #endif // CONSTANTS_H
