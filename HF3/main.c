@@ -20,16 +20,6 @@ Gaál Botond
 CRQEYD
 2023.11.12.*/
 
-typedef struct GameState {
-    GameView game_view;
-    Stats stats,
-    LeaderBoard leaderboard,
-    SDL_Renderer* renderer,
-    TTF_Font* font,
-    TTF_Font* underlined,
-    TextArray* p_textarray
-} GameState;
-
 typedef enum {
     MainMenu = 0,
     SingleGame = 1,
@@ -52,6 +42,16 @@ typedef struct LeaderBoard {
     LeaderboardEntry entries[LEADERBOARD_SIZE];
     int num;
 } LeaderBoard;
+
+typedef struct GameState {
+    Stats stats;
+    LeaderBoard leaderboard;
+    SDL_Renderer* renderer;
+    TTF_Font* font;
+    TTF_Font* underlined;
+    TextArray* p_textarray;
+    GameView game_view;
+} GameState;
 
 bool load_leaderboard(LeaderBoard* leaderboard) {
     FILE* file = fopen(LEADERBOARD, "r");
@@ -81,10 +81,6 @@ bool save_leaderboard(LeaderBoard leaderboard) {
     return true;
 }
 
-void clear_leaderboard(LeaderBoard* leaderboard) {
-    leaderboard->num = 0;
-}
-
 void add_entry(LeaderBoard* leaderboard, LeaderboardEntry entry) {
     int position = leaderboard->num;
     for (int i=0; i < leaderboard->num; i++) {
@@ -94,7 +90,7 @@ void add_entry(LeaderBoard* leaderboard, LeaderboardEntry entry) {
         }
     }
     leaderboard->num = leaderboard->num < 10 ? leaderboard->num + 1 : 10;
-    for (int i=leaderboard->num; i > position; i--) {
+    for (int i=leaderboard->num-1; i > position; i--) {
         leaderboard->entries[i].wpm = leaderboard->entries[i-1].wpm;
         strcpy(leaderboard->entries[i].name, leaderboard->entries[i-1].name);
     }
@@ -116,23 +112,11 @@ void remove_entry(LeaderBoard* leaderboard, int idx) {
         leaderboard->num = 0;
     } else {
         leaderboard->num -= 1;
-        for (int i=leaderboard->num-1; i>= idx; i--) {
+        for (int i=idx; i<leaderboard->num; i++) {
             leaderboard->entries[i].wpm = leaderboard->entries[i+1].wpm;
             strcpy(leaderboard->entries[i].name, leaderboard->entries[i+1].name);
         }
     }
-}
-
-void update_leaderboard(LeaderBoard* leaderboard, LeaderboardEntry entry) {
-    int idx = find_index(*leaderboard, entry);
-    if (idx == -1) {
-        add_entry(leaderboard, entry);
-    }
-    if (idx != -1 && leaderboard->entries[idx].wpm < entry.wpm) {
-        remove_entry(leaderboard, idx);
-        add_entry(leaderboard, entry);
-    }
-
 }
 
 void print_leaderboard(LeaderBoard leaderboard) {
@@ -141,6 +125,20 @@ void print_leaderboard(LeaderBoard leaderboard) {
         printf("Name: %s, wpm: %.2f\n", leaderboard.entries[i].name, leaderboard.entries[i].wpm);
     }
     printf("----------------\n");
+}
+
+void update_leaderboard(LeaderBoard* leaderboard, LeaderboardEntry entry) {
+    int idx = find_index(*leaderboard, entry);
+    if (idx == -1) {
+        add_entry(leaderboard, entry);
+    }
+    if (idx != -1 && leaderboard->entries[idx].wpm < entry.wpm) {
+        print_leaderboard(*leaderboard);
+        remove_entry(leaderboard, idx);
+        print_leaderboard(*leaderboard);
+        add_entry(leaderboard, entry);
+    }
+
 }
 
 bool top10(LeaderBoard leaderboard, double wpm) {
@@ -418,6 +416,11 @@ void get_name(GameState* game_state) {
     SDL_PushEvent(&event);
 }
 
+void reset_leaderboard(GameState* game_state) {
+    game_state->leaderboard.num = 0;
+    save_leaderboard(game_state->leaderboard);
+}
+
 void go_to_settings(GameState* game_state) {
     printf("Clicked SETTINGS\n");
     game_state->game_view = Settings;
@@ -498,8 +501,12 @@ void handle_countdown_s(bool* countdown_over, SDL_Rect rect, int* countdown, TTF
     }
 }
 
-void run_single_game(TextArray* textarray, GameView* game_view, SDL_Renderer *renderer, TTF_Font *font, TTF_Font *underlined, Stats* stats) { //should eventually return statistics instead of void
-     /*A felhasznált színek:*/
+void run_single_game(GameState* game_state) { //should eventually return statistics instead of void
+    TextArray* textarray = game_state->p_textarray;
+    SDL_Renderer* renderer = game_state->renderer;
+    TTF_Font* font = game_state->font;
+    TTF_Font* underlined = game_state->underlined;
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color zold = {0, 255, 0};
@@ -530,7 +537,7 @@ void run_single_game(TextArray* textarray, GameView* game_view, SDL_Renderer *re
     SDL_StartTextInput();
     SDL_Event event;
     clock_t t;
-    while (!quit && *game_view == SingleGame && i <text.word_count && SDL_WaitEvent(&event)) {
+    while (!quit && game_state->game_view == SingleGame && i <text.word_count && SDL_WaitEvent(&event)) {
         char* target = text.words[i];
         switch (event.type) {
             case TICK_SEC:
@@ -540,7 +547,7 @@ void run_single_game(TextArray* textarray, GameView* game_view, SDL_Renderer *re
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT && in_rect(menu_button.rect, event.button.x, event.button.y)) {
-                    menu_button.func(game_view);
+                    menu_button.func(game_state);
                     draw = true;
                 }
                 break;
@@ -611,19 +618,21 @@ void run_single_game(TextArray* textarray, GameView* game_view, SDL_Renderer *re
         }
     }
     SDL_StopTextInput();
-    *stats = calculate_stats(text.word_count, correct, times);
+    game_state->stats = calculate_stats(text.word_count, correct, times);
     free(correct);
     free(times);
     free(word_rects);
     SDL_RemoveTimer(id);
-    if (*game_view == SingleGame) {
-        *game_view = Statistics;
+    if (game_state->game_view == SingleGame) {
+        game_state->game_view = Statistics;
         event.type = GAME_VIEW_CHANGED_EVENT;
         SDL_PushEvent(&event);
     }
 }
 
-void main_menu(GameView* game_view, SDL_Renderer *renderer, TTF_Font *font) {
+void main_menu(GameState* game_state) {
+    SDL_Renderer* renderer = game_state->renderer;
+    TTF_Font* font = game_state->font;
     /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
@@ -636,13 +645,13 @@ void main_menu(GameView* game_view, SDL_Renderer *renderer, TTF_Font *font) {
     bool quit = false;
     bool draw = true;
     SDL_Event event;
-    while (!quit && *game_view == MainMenu && SDL_WaitEvent(&event)) {
+    while (!quit && game_state->game_view == MainMenu && SDL_WaitEvent(&event)) {
         switch (event.type) {
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
                     for (int i=0; i<2; i++) {
                         if (in_rect(buttons[i].rect, event.button.x, event.button.y)) {
-                            buttons[i].func(game_view);
+                            buttons[i].func(game_state);
                             draw = true;
                             break;
                         }
@@ -665,24 +674,26 @@ void main_menu(GameView* game_view, SDL_Renderer *renderer, TTF_Font *font) {
     }
 }
 
-void settings(GameView* game_view, SDL_Renderer *renderer, TTF_Font *font, LeaderBoard leaderboard) {
+void settings(GameState* game_state) {
+    SDL_Renderer* renderer = game_state->renderer;
+    TTF_Font* font =  game_state->font;
     /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
-    SDL_Rect menu_button_rect = {MARGO, MAGAS/2-50, 200, 100};
-    Button menu_button = {menu_button_rect, feher, fekete, "Menu", go_to_menu};
-    Button buttons[1] = {menu_button};
+    Button menu_button = {{MARGO, MAGAS/2-125, 200, 100}, feher, fekete, "Menu", go_to_menu};
+    Button reset_leader_button = {{MARGO, MAGAS/2+125, 250, 100}, feher, fekete, "Reset Leaderboard", reset_leaderboard};
+    Button buttons[2] = {menu_button, reset_leader_button};
     bool quit = false;
     bool draw = true;
     SDL_Event event;
-    while (!quit && *game_view == Settings && SDL_WaitEvent(&event)) {
+    while (!quit && game_state->game_view == Settings && SDL_WaitEvent(&event)) {
         switch (event.type) {
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    for (int i=0; i<1; i++) {
+                    for (int i=0; i<2; i++) {
                         if (in_rect(buttons[i].rect, event.button.x, event.button.y)) {
-                            buttons[i].func(game_view);
+                            buttons[i].func(game_state);
                             draw = true;
                             break;
                         }
@@ -696,8 +707,8 @@ void settings(GameView* game_view, SDL_Renderer *renderer, TTF_Font *font, Leade
         }
         if (draw) {
             clear_screen(renderer, vilagos_kek);
-            render_leaderboard(leaderboard, fekete, font, renderer);
-            for (int i=0; i<1; i++) {
+            render_leaderboard(game_state->leaderboard, fekete, font, renderer);
+            for (int i=0; i<2; i++) {
                 render_button(buttons[i], renderer, font);
             }
             SDL_RenderPresent(renderer);
@@ -706,39 +717,36 @@ void settings(GameView* game_view, SDL_Renderer *renderer, TTF_Font *font, Leade
     }
 }
 
-void statistics(GameView* game_view, SDL_Renderer *renderer, TTF_Font *font, Stats stats, LeaderBoard leaderboard) {
+void statistics(GameState* game_state) {
+    //TODO: ezt meg lehetne csinálni szebben (lekezelni hogy nem tudjuk, hány gomb van)
+    SDL_Renderer* renderer = game_state->renderer;
+    TTF_Font* font = game_state->font;
+    Stats stats = game_state->stats;
+    LeaderBoard leaderboard = game_state->leaderboard;
     /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
-    char stats_str[10*HOSSZ];
-    sprintf(stats_str, "Az átlagos WPM-ed: %.2f. Az átlagos pontosságod: %.2f%%", stats.wpm, stats.accuracy*100);
-    SDL_Rect menu_button_rect = {SZELES/2-100, MAGAS-150, 200, 100};
-    Button menu_button = {menu_button_rect, feher, fekete, "Menu", go_to_menu};
-    double in_top10 = top10(leaderboard, stats.wpm);
-    int num_buttons;
-    if (in_top10) {
-        num_buttons = 2;
-    } else {
-        num_buttons = 1;
+    char display_str[10*HOSSZ];
+    sprintf(display_str, "WPM: %.2f. Pontosság: %.2f%%.", stats.wpm, stats.accuracy*100);
+    Button menu_button = {{SZELES/2-100, MAGAS-150, 200, 100}, feher, fekete, "Menu", go_to_menu};
+    Button settings_button = {{menu_button.rect.x, menu_button.rect.y - menu_button.rect.h*2, menu_button.rect.w, menu_button.rect.h}, feher, fekete, "Settings", go_to_settings};
+    if (top10(leaderboard, stats.wpm)) {
+        settings_button.str = "Rögzítés";
+        settings_button.func = get_name;
+        strcat(display_str, " Ez ranglistás eredmény!");
     }
-    Button* buttons = (Button*) malloc(sizeof(Button)*num_buttons);
-    buttons[0] = menu_button;
-    if (in_top10) {
-        SDL_Rect input_button_rect = {menu_button_rect.x, menu_button_rect.y - menu_button_rect.h*2, menu_button_rect.w, menu_button_rect.h};
-        Button input_button = {input_button_rect, feher, fekete, "Rögzítés!", get_name};
-        buttons[1] = input_button;
-    }
+    Button buttons[2] = {menu_button, settings_button};
     bool quit = false;
     bool draw = true;
     SDL_Event event;
-    while (!quit && *game_view == Statistics && SDL_WaitEvent(&event)) {
+    while (!quit && game_state->game_view == Statistics && SDL_WaitEvent(&event)) {
         switch (event.type) {
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
-                    for (int i=0; i<num_buttons; i++) {
+                    for (int i=0; i<2; i++) {
                         if (in_rect(buttons[i].rect, event.button.x, event.button.y)) {
-                            buttons[i].func(game_view);
+                            buttons[i].func(game_state);
                             draw = true;
                             break;
                         }
@@ -752,40 +760,42 @@ void statistics(GameView* game_view, SDL_Renderer *renderer, TTF_Font *font, Sta
         }
         if (draw) {
             clear_screen(renderer, vilagos_kek);
-            render_string_blended(stats_str, fekete, font, SZELES/2, MARGO, renderer, Middle);
-            for (int i=0; i<num_buttons; i++) {
+            render_string_blended(display_str, fekete, font, SZELES/2, MAGAS/2, renderer, Middle);
+            for (int i=0; i<2; i++) {
                 render_button(buttons[i], renderer, font);
             }
             SDL_RenderPresent(renderer);
             draw = false;
         }
     }
-    free(buttons);
 }
 
-void ask_name(GameView* game_view, SDL_Renderer *renderer, TTF_Font *font, Stats stats, LeaderBoard* leaderboard) {
+void ask_name(GameState* game_state) {
+    SDL_Renderer* renderer = game_state->renderer;
+    TTF_Font* font = game_state->font;
     /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
     clear_screen(renderer, vilagos_kek);
-    render_string_blended("Adja meg a kedves nevét!", fekete, font, SZELES/2, MAGAS/2-2*MARGO, renderer, Middle);
+    char display_str[2*HOSSZ];
+    sprintf(display_str, "WPM: %.2f, adja meg a nevét hogy rögzíthessük!", game_state->stats.wpm);
+    render_string_blended(display_str, fekete, font, SZELES/2, MAGAS/2-2*MARGO, renderer, Middle);
     SDL_RenderPresent(renderer);
     SDL_Rect input_box = {MARGO, MAGAS/2, SZELES-2*MARGO, MARGO};
     char input[HOSSZ];
     input_text(input, HOSSZ, input_box, feher, fekete, font, renderer);
     printf("Got this: %s\n", input);
     LeaderboardEntry entry;
-    entry.wpm = stats.wpm;
+    entry.wpm = game_state->stats.wpm;
     strcpy(entry.name, input);
-    update_leaderboard(leaderboard, entry);
-    print_leaderboard(*leaderboard);
-    *game_view = Settings;
+    update_leaderboard(&(game_state->leaderboard), entry);
+    print_leaderboard(game_state->leaderboard);
+    game_state->game_view = Settings;
     SDL_Event event;
     event.type = GAME_VIEW_CHANGED_EVENT;
     SDL_PushEvent(&event);
 }
-
 
 int main(int argc, char *argv[]) {
     srand(time(0)); //inicializáljuk a randomszám generátort
@@ -793,7 +803,7 @@ int main(int argc, char *argv[]) {
     SDL_Renderer *renderer;
     TTF_Font *font;
     TTF_Font *underlined;
-    Stats stats;
+    Stats stats = {0, 0};
     sdl_init(SZELES, MAGAS, FONT ,&window, &renderer, &font, &underlined);
     TextArray textarray = parse_file("hobbit_short.txt");
     LeaderBoard leaderboard;
@@ -803,7 +813,7 @@ int main(int argc, char *argv[]) {
         print_leaderboard(leaderboard);
     }
     GameView game_view = MainMenu;
-    GameState game_state = {game_view, stats, leaderboard, renderer, font, underlined, &textarray};
+    GameState game_state = {stats, leaderboard, renderer, font, underlined, &textarray, game_view};
     SDL_Event event;
     event.type = GAME_VIEW_CHANGED_EVENT;
     SDL_PushEvent(&event);
@@ -811,21 +821,21 @@ int main(int argc, char *argv[]) {
     while (!quit && SDL_WaitEvent(&event)) {
         switch (event.type) {
             case GAME_VIEW_CHANGED_EVENT:
-                switch (game_view){
+                switch (game_state.game_view){
                     case MainMenu:
-                        main_menu(&game_view, renderer, font);
+                        main_menu(&game_state);
                         break;
                     case Settings:
-                        settings(&game_view, renderer, font, leaderboard);
+                        settings(&game_state);
                         break;
                     case SingleGame:
-                        run_single_game(&textarray, &game_view, renderer, font, underlined, &stats);
+                        run_single_game(&game_state);
                         break;
                     case Statistics:
-                        statistics(&game_view, renderer, font, stats, leaderboard);
+                        statistics(&game_state);
                         break;
                     case AskName:
-                        ask_name(&game_view, renderer, font, stats, &leaderboard);
+                        ask_name(&game_state);
                         break;
                 }
                 break;
@@ -834,7 +844,7 @@ int main(int argc, char *argv[]) {
                 break;
         }
     }
-    save_leaderboard(leaderboard);
+    save_leaderboard(game_state.leaderboard);
     free_textarray(&textarray);
     sdl_close(&window, &renderer, &font);
     return 0;
