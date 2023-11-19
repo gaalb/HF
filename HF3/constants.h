@@ -2,8 +2,8 @@
 #define CONSTANTS_H
 
 #define HOSSZ 101
-#define SZELES 1000
-#define MAGAS 600
+#define SZELES 1400
+#define MAGAS 800
 #define MARGO 40
 #define KOCSI_W 200
 #define KOCSI_H 100
