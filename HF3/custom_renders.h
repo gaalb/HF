@@ -9,6 +9,11 @@
 #include "constants.h"
 #include "text.h"
 
+typedef enum {
+    TopLeft = 0,
+    Middle = 1
+} Position;
+
 char* add_space(char* s1, char* s2);
 
 int match_len(char* target, char* input);
@@ -21,9 +26,9 @@ void render_string_to_rect_blended(char* str, SDL_Color color, TTF_Font* font, S
 
 void render_string_to_rect_shaded(char* str, SDL_Color color, SDL_Color background, TTF_Font* font, SDL_Rect rect, SDL_Renderer* renderer);
 
-SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x, int y, SDL_Renderer* renderer);
+SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x, int y, SDL_Renderer* renderer, Position position);
 
-SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, TTF_Font* font, int x, int y, SDL_Renderer* renderer);
+SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, TTF_Font* font, int x, int y, SDL_Renderer* renderer, Position position);
 
 int get_cursor_index(Text text, int target_index, int input_len, int* cursor_len);
 

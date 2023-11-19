@@ -80,13 +80,21 @@ void render_string_to_rect_shaded(char* str, SDL_Color color, SDL_Color backgrou
 
 /*kirenderel egy sztringet háttérszín nélkül egy adott x, y pozícióra, és
 visszaadja a dobozt, amibe a sztring került*/
-SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x, int y, SDL_Renderer* renderer) {
+SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x, int y, SDL_Renderer* renderer, Position position) {
     SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, str, color);
     SDL_Rect rect;
     rect.w = word_s->w;
     rect.h = word_s->h;
-    rect.x = x;
-    rect.y = y;
+    switch (position) {
+        case TopLeft:
+            rect.x = x;
+            rect.y = y;
+            break;
+        case Middle:
+            rect.x = x - rect.w/2;
+            rect.y = y - rect.h/2;
+            break;
+    }
     x += rect.w;
     SDL_Texture* word_t = SDL_CreateTextureFromSurface(renderer, word_s);
     SDL_RenderCopy(renderer, word_t, NULL, &rect);
@@ -97,7 +105,7 @@ SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x
 
 /*kirenderel egy sztringet háttérszínnel egy adott x, y pozícióra, és
 visszaadja a dobozt, amibe a sztring került*/
-SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, TTF_Font* font, int x, int y, SDL_Renderer* renderer) {
+SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, TTF_Font* font, int x, int y, SDL_Renderer* renderer, Position position) {
     SDL_Surface* word_s  = TTF_RenderUTF8_Shaded(font, str, color, background);
     SDL_Rect rect;
     rect.w = word_s->w;
@@ -223,18 +231,18 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
     if (green_target_len) { //zölddel aláhúzott rész
         strcpy(display_str, target);
         display_str[green_target_len] = '\0';
-        rect = render_string_blended(display_str, color2, underlined, x, y, renderer);
+        rect = render_string_blended(display_str, color2, underlined, x, y, renderer, TopLeft);
         x += rect.w;
     } //pirossal aláhúzott rész
     if (red_target_len) {
         strcpy(display_str, target+green_target_len);
         display_str[red_target_len] = '\0';
-        rect = render_string_shaded(display_str, color1, color3, underlined, x, y, renderer);
+        rect = render_string_shaded(display_str, color1, color3, underlined, x, y, renderer, TopLeft);
         x += rect.w;
     } //feketével aláhúzott rész
     if (black_target_len) {
         strcpy(display_str, target+green_target_len+red_target_len);
-        rect = render_string_blended(display_str, color1, underlined, x, y, renderer);
+        rect = render_string_blended(display_str, color1, underlined, x, y, renderer, TopLeft);
         x += rect.w;
     } //ha volt még piros rész az aláhúzott szó után, attól még az utána lévõ szóköz nincs aláhúzva!
     if (red_len) {
@@ -263,9 +271,9 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
             display_str[red_len] ='\0';
             x = rect.x;
             y = rect.y;
-            rect = render_string_shaded(display_str, color1, color3, font, x, y, renderer);
+            rect = render_string_shaded(display_str, color1, color3, font, x, y, renderer, TopLeft);
             x += rect.w;
-            render_string_blended(add_space(display_str, word+red_len), color1, font, x, y, renderer);
+            render_string_blended(add_space(display_str, word+red_len), color1, font, x, y, renderer, TopLeft);
             x += rect.w;
             red_len = 0;
         }

@@ -396,7 +396,7 @@
 	"debugmalloc.h"
 	"constants.h"
 
-1700346938 source:d:\prog\hf\hf3\main.c
+1700393060 source:d:\prog\hf\hf3\main.c
 	<SDL2/SDL2_gfxPrimitives.h>
 	<SDL2/SDL_ttf.h>
 	<math.h>
@@ -409,7 +409,7 @@
 	"custom_renders.h"
 	"constants.h"
 
-1700338850 d:\prog\hf\hf3\custom_renders.h
+1700393237 d:\prog\hf\hf3\custom_renders.h
 	<SDL2/SDL.h>
 	<SDL2/SDL2_gfxPrimitives.h>
 	<SDL2/SDL_ttf.h>
@@ -418,9 +418,9 @@
 	"constants.h"
 	"text.h"
 
-1700344528 d:\prog\hf\hf3\constants.h
+1700391339 d:\prog\hf\hf3\constants.h
 
-1700338823 source:d:\prog\hf\hf3\custom_renders.c
+1700393247 source:d:\prog\hf\hf3\custom_renders.c
 	<SDL2/SDL.h>
 	<SDL2/SDL2_gfxPrimitives.h>
 	<SDL2/SDL_ttf.h>

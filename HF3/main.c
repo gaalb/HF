@@ -194,9 +194,50 @@ Stats calculate_stats(int len, bool* correct, double* times) {
 
 Uint32 idozit(Uint32 ms, void* param) {
     SDL_Event event;
-    event.type = S_TIMER_TICK;
+    event.type = TICK_SEC;
     SDL_PushEvent(&event);
     return ms;
+}
+
+void handle_countdown_s(bool* countdown_over, SDL_Rect rect, int* countdown, TTF_Font *font, clock_t* t, SDL_Renderer* renderer) {
+    if (countdown >= 0) {
+        SDL_Color sarga = {255, 255, 0};
+        SDL_Color zold = {0, 255, 0};
+        SDL_Color piros = {255, 50, 50};
+        SDL_Color szurke = {195, 195, 195};
+        SDL_Color sotet_szurke = {100, 100, 100};
+        SDL_Color fekete = {0, 0, 0};
+        SDL_Color color;
+        boxRGBA(renderer, rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, szurke.r, szurke.g, szurke.b, 255);
+        rectangleRGBA(renderer, rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, fekete.r, fekete.g, fekete.b, 255);
+        char num[HOSSZ] = "";
+        sprintf(num, "%.2d", *countdown);
+        render_string_blended(num, fekete, font, rect.x + rect.w*7/8, rect.y + rect.h/2, renderer, Middle);
+        if (*countdown > 3) {
+            color = piros;
+        } else {
+            color = sotet_szurke;
+        }
+        filledCircleRGBA(renderer, rect.x + rect.w*5/8, rect.y + rect.h/2, rect.w/8.5, color.r, color.g, color.b, 255);
+        circleRGBA(renderer, rect.x + rect.w*5/8, rect.y + rect.h/2, rect.w/8.5, fekete.r, fekete.g, fekete.b, 255);
+        if (*countdown <= 3 && *countdown >0) {
+            color = sarga;
+        } else {
+            color = sotet_szurke;
+        }
+        filledCircleRGBA(renderer, rect.x + rect.w*3/8, rect.y + rect.h/2, rect.w/8.5, color.r, color.g, color.b, 255);
+        circleRGBA(renderer, rect.x + rect.w*3/8, rect.y + rect.h/2, rect.w/8.5, fekete.r, fekete.g, fekete.b, 255);
+        if (*countdown == 0) {
+            color = zold;
+            *countdown_over = true;
+            *t = clock();
+        } else {
+            color = sotet_szurke;
+        }
+        filledCircleRGBA(renderer, rect.x + rect.w/8, rect.y + rect.h/2, rect.w/8.5, color.r, color.g, color.b, 255);
+        circleRGBA(renderer, rect.x + rect.w/8, rect.y + rect.h/2, rect.w/8.5, fekete.r, fekete.g, fekete.b, 255);
+        *countdown -= 1;
+    }
 }
 
 void run_single_game(TextArray* textarray, GameView* game_view, SDL_Renderer *renderer, TTF_Font *font, TTF_Font *underlined, Stats* stats) { //should eventually return statistics instead of void
@@ -225,20 +266,17 @@ void run_single_game(TextArray* textarray, GameView* game_view, SDL_Renderer *re
     bool draw = true;
     bool quit = false;
     bool countdown_over = false;
-    int N=10;
+    int countdown = 5;
     SDL_TimerID id = SDL_AddTimer(1000, idozit, NULL);
     SDL_StartTextInput();
     SDL_Event event;
-    clock_t t = clock();
+    clock_t t;
     while (!quit && *game_view == SingleGame && i <text.word_count && SDL_WaitEvent(&event)) {
         char* target = text.words[i];
         switch (event.type) {
-            case S_TIMER_TICK:
-                if (N > 1) {
-                    N--;
+            case TICK_SEC:
+                if (!countdown_over) {
                     draw = true;
-                } else {
-                    countdown_over = true;
                 }
                 break;
             case SDL_MOUSEBUTTONDOWN:
@@ -305,15 +343,9 @@ void run_single_game(TextArray* textarray, GameView* game_view, SDL_Renderer *re
             render_Text(text, font, underlined, word_rects, renderer, fekete, zold, vilagos_piros, i, input);
             render_car(renderer, sotet_piros, fekete, MARGO+(SZELES-KOCSI_W-MARGO)*i/text.word_count, MAGAS-KOCSI_H, KOCSI_W, KOCSI_H);
             render_button(menu_button, renderer, font);
-            if (!countdown_over) { //replace this with something nice
-                if (N>5){
-                    boxRGBA(renderer, SZELES/2-N*MARGO/2, MAGAS/2-2*MARGO, SZELES/2+N*MARGO/2, MAGAS/2-MARGO, 255, 50, 50, 255);
-                } else if (N>1) {
-                    boxRGBA(renderer, SZELES/2-N*MARGO/2, MAGAS/2-2*MARGO, SZELES/2+N*MARGO/2, MAGAS/2-MARGO, 255, 255, 0, 255);
-                } else {
-                    boxRGBA(renderer, SZELES/2-N*MARGO/2, MAGAS/2-2*MARGO, SZELES/2+N*MARGO/2, MAGAS/2-MARGO, 0, 255, 0, 255);
-                }
-
+            if (!countdown_over) {
+                SDL_Rect countdown_display = {SZELES/2 - 2*MARGO, MAGAS/2 - MARGO, 4 *MARGO, MARGO};
+                handle_countdown_s(&countdown_over, countdown_display, &countdown, font, &t, renderer);
             }
             SDL_RenderPresent(renderer);
             draw = false;
@@ -441,7 +473,7 @@ void statistics(GameView* game_view, SDL_Renderer *renderer, TTF_Font *font, Sta
         }
         if (draw) {
             clear_screen(renderer, vilagos_kek);
-            render_string_blended(stats_str, fekete, font, MARGO, MARGO, renderer);
+            render_string_blended(stats_str, fekete, font, SZELES/2, MAGAS/2, renderer, Middle);
             render_button(menu_button, renderer, font);
             SDL_RenderPresent(renderer);
             draw = false;
