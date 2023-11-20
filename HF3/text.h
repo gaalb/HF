@@ -9,19 +9,7 @@
 #include <string.h>
 #include <time.h>
 #include "debugmalloc.h"
-#include "constants.h"
-
-//sztringek dinamikus tömbje
-typedef struct Text {
-    int word_count;
-    char** words;
-} Text;
-
-//text-ek dinamikus tömbje
-typedef struct TextArray {
-    int text_count;
-    Text* texts;
-} TextArray;
+#include "types.h"
 
 void print_text(Text text);
 

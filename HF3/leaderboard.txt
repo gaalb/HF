@@ -1,1 +1,4 @@
-0
+3
+82.67 Sprint Elek
+77.97 Hack Elek
+51.92 Tipp Elek

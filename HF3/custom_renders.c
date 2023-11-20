@@ -1,18 +1,12 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
-#include <SDL2/SDL_ttf.h>
-#include <string.h>
 #include "custom_renders.h"
-#include "constants.h"
-#include "text.h"
 
-/*az s1 stringbe belem·solja az s2 stringet ˙gy, hogy konkaten·l egy space-t*/
+/*az s1 stringbe belem√°solja az s2 stringet √∫gy, hogy konkaten√°l egy space-t*/
 char* add_space(char* s1, char* s2) {
     strcpy(s1, s2);
     return strcat(s1, " ");
 }
 
-/*megadja, kÈt string kˆz¸l az elsı h·ny karater egyezik meg*/
+/*megadja, k√©t string k√∂z√ºl az els√µ h√°ny karater egyezik meg*/
 int match_len(char* target, char* input) {
     int l=0;
     while (target[l] != '\0' && input[l] != '\0') {
@@ -30,7 +24,7 @@ bool input_correct(char* target, char* input) {
     return match_len(target, input) == input_len;
 }
 
-/*kirajzolja a szˆvegdobozt, ahova a bemenetet gÈpelj¸k, a benne lÈvı szˆveggel egy¸tt*/
+/*kirajzolja a sz√∂vegdobozt, ahova a bemenetet g√©pelj√ºk, a benne l√©v√µ sz√∂veggel egy√ºtt*/
 void render_input(char *input, SDL_Rect teglalap, SDL_Color input_color, TTF_Font *font, SDL_Renderer *renderer, char* composition, char* textandcomposition) {
     SDL_Color fekete = {0, 0, 0}; //a border color kb. mindig fekete
     /* Max hasznalhato szelesseg */
@@ -60,7 +54,7 @@ void render_input(char *input, SDL_Rect teglalap, SDL_Color input_color, TTF_Fon
     }
 }
 
-/*kirenderel egy stringet h·ttÈrszÌn nÈlk¸l egy megadott dobozba*/
+/*kirenderel egy stringet h√°tt√©rsz√≠n n√©lk√ºl egy megadott dobozba*/
 void render_string_to_rect_blended(char* str, SDL_Color color, TTF_Font* font, SDL_Rect rect, SDL_Renderer* renderer) {
     SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, str, color);
     SDL_Texture* word_t = SDL_CreateTextureFromSurface(renderer, word_s);
@@ -69,7 +63,7 @@ void render_string_to_rect_blended(char* str, SDL_Color color, TTF_Font* font, S
     SDL_DestroyTexture(word_t);
 }
 
-/*kirenderel egy stringet h·ttÈrszÌnnel egy megadott dobozba*/
+/*kirenderel egy stringet h√°tt√©rsz√≠nnel egy megadott dobozba*/
 void render_string_to_rect_shaded(char* str, SDL_Color color, SDL_Color background, TTF_Font* font, SDL_Rect rect, SDL_Renderer* renderer) {
     SDL_Surface* word_s  = TTF_RenderUTF8_Shaded(font, str, color, background);
     SDL_Texture* word_t = SDL_CreateTextureFromSurface(renderer, word_s);
@@ -78,8 +72,8 @@ void render_string_to_rect_shaded(char* str, SDL_Color color, SDL_Color backgrou
     SDL_DestroyTexture(word_t);
 }
 
-/*kirenderel egy sztringet h·ttÈrszÌn nÈlk¸l egy adott x, y pozÌciÛra, Ès
-visszaadja a dobozt, amibe a sztring ker¸lt*/
+/*kirenderel egy sztringet h√°tt√©rsz√≠n n√©lk√ºl egy adott x, y poz√≠ci√≥ra, √©s
+visszaadja a dobozt, amibe a sztring ker√ºlt*/
 SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x, int y, SDL_Renderer* renderer, Position position) {
     SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, str, color);
     SDL_Rect rect;
@@ -103,8 +97,8 @@ SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x
     return rect;
 }
 
-/*kirenderel egy sztringet h·ttÈrszÌnnel egy adott x, y pozÌciÛra, Ès
-visszaadja a dobozt, amibe a sztring ker¸lt*/
+/*kirenderel egy sztringet h√°tt√©rsz√≠nnel egy adott x, y poz√≠ci√≥ra, √©s
+visszaadja a dobozt, amibe a sztring ker√ºlt*/
 SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, TTF_Font* font, int x, int y, SDL_Renderer* renderer, Position position) {
     SDL_Surface* word_s  = TTF_RenderUTF8_Shaded(font, str, color, background);
     SDL_Rect rect;
@@ -120,7 +114,7 @@ SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, 
     return rect;
 }
 
-/*kisz·molja, a Text objektum melyik szav·ba esik Èppen a kurzor*/
+/*kisz√°molja, a Text objektum melyik szav√°ba esik √©ppen a kurzor*/
 int get_cursor_index(Text text, int target_index, int input_len, int* cursor_len) {
     int target_len = strlen(text.words[target_index]);
     while (input_len > target_len+1 && target_index < text.word_count-1) {
@@ -131,12 +125,12 @@ int get_cursor_index(Text text, int target_index, int input_len, int* cursor_len
     return target_index;
 }
 
-/*kisz·molja, a szˆveg szavai mely dobozokba kell, hogy essenek,
-ahhoz, hogy a szˆveg befÈrjen a megadott helyre
-x: a szˆvegdoboz bal szÈle
-y: a szˆvegdoboz teteje
-w: a szˆvegdoboz szÈlessÈge
-a szˆvegdoboz magass·ga abbÛl dıl el, h·ny sorba fog kifÈrni a szˆveg*/
+/*kisz√°molja, a sz√∂veg szavai mely dobozokba kell, hogy essenek,
+ahhoz, hogy a sz√∂veg bef√©rjen a megadott helyre
+x: a sz√∂vegdoboz bal sz√©le
+y: a sz√∂vegdoboz teteje
+w: a sz√∂vegdoboz sz√©less√©ge
+a sz√∂vegdoboz magass√°ga abb√≥l d√µl el, h√°ny sorba fog kif√©rni a sz√∂veg*/
 SDL_Rect* calculate_Rects(Text text, TTF_Font* font, int x, int y, int w) {
     SDL_Color color = {0, 0, 0};
     int word_count = text.word_count;
@@ -160,12 +154,12 @@ SDL_Rect* calculate_Rects(Text text, TTF_Font* font, int x, int y, int w) {
     return word_rects;
 }
 
-/*Letˆrli a t·bl·t :) */
-void clear_screen(SDL_Renderer* renderer, SDL_Color color) {
-    boxRGBA(renderer, 0, 0, SZELES, MAGAS, color.r, color.g, color.b, 255);
+/*Let√∂rli a t√°bl√°t :) */
+void clear_screen(GameData* game_data, SDL_Color color) {
+    boxRGBA(game_data->renderer, 0, 0, game_data->szeles, game_data->magas, color.r, color.g, color.b, 255);
 }
 
-/*A kurzor index Ès a kurzor szavon bel¸li pozÌciÛja alapj·n rendereli a kurzort (egy elny˙jtott tÈglalap)*/
+/*A kurzor index √©s a kurzor szavon bel√ºli poz√≠ci√≥ja alapj√°n rendereli a kurzort (egy elny√∫jtott t√©glalap)*/
 void render_cursor(Text text, SDL_Rect* word_rects, TTF_Font* font, int cursor_index, int cusor_len, SDL_Renderer* renderer) {
     SDL_Color fekete = {0, 0, 0};
     SDL_Rect rect = word_rects[cursor_index];
@@ -173,7 +167,7 @@ void render_cursor(Text text, SDL_Rect* word_rects, TTF_Font* font, int cursor_i
     char *word = text.words[cursor_index];
     int x1, x2, y1, y2;
     if (cusor_len) {
-        /*beÌrjuk display_str-be a szÛt, Ès */
+        /*be√≠rjuk display_str-be a sz√≥t, √©s */
         add_space(display_str, word);
         display_str[cusor_len] = '\0';
         SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, display_str, fekete);
@@ -187,64 +181,64 @@ void render_cursor(Text text, SDL_Rect* word_rects, TTF_Font* font, int cursor_i
     boxRGBA(renderer, x1, y1, x2, y2, fekete.r, fekete.g, fekete.b, 255);
 }
 
-/*kirajzolja a szˆveget:
-text: a szˆveg
-font: az al·h˙zatlan szˆvegtÌpus
-underlined: ugyanaz mint font, csak al·h˙zva
-rects: a tÈglalapok list·ja, ahova az egyes szavak lesznek berajzolva
+/*kirajzolja a sz√∂veget:
+text: a sz√∂veg
+font: az al√°h√∫zatlan sz√∂vegt√≠pus
+underlined: ugyanaz mint font, csak al√°h√∫zva
+rects: a t√©glalapok list√°ja, ahova az egyes szavak lesznek berajzolva
 renderer: a renderer
-color1: azoknak a szavaknak a szÌne, amik a kurzor ut·n vannak (fekete)
-color2: azoknak a szavaknak a szÌne, amik m·r helyesen be lettek Ìrva (zˆld)
-color3: a h·ttÈrszÌn amivel jelˆlj¸k a helytelen gÈpelÈst (piros)
-target_index: annak a szÛnak az indexe, amit Èppen be kell gÈpelni
-input: a j·tÈkos ·ltal begÈpelt szÛ*/
+color1: azoknak a szavaknak a sz√≠ne, amik a kurzor ut√°n vannak (fekete)
+color2: azoknak a szavaknak a sz√≠ne, amik m√°r helyesen be lettek √≠rva (z√∂ld)
+color3: a h√°tt√©rsz√≠n amivel jel√∂lj√ºk a helytelen g√©pel√©st (piros)
+target_index: annak a sz√≥nak az indexe, amit √©ppen be kell g√©pelni
+input: a j√°t√©kos √°ltal beg√©pelt sz√≥*/
 void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word_rects, SDL_Renderer* renderer, SDL_Color color1, SDL_Color color2, SDL_Color color3, int target_index, char* input) {
-    char* word; //ez fog mutatni a kirajzolandÛ szÛra
-    char* target = text.words[target_index]; //ez mutat arra a szÛra, amit aktu·lisan be kell gÈpelni
-    char display_str[HOSSZ]; //ebben fogjuk t·rolni amit ki akarunk Ìratni
+    char* word; //ez fog mutatni a kirajzoland√≥ sz√≥ra
+    char* target = text.words[target_index]; //ez mutat arra a sz√≥ra, amit aktu√°lisan be kell g√©pelni
+    char display_str[HOSSZ]; //ebben fogjuk t√°rolni amit ki akarunk √≠ratni
     int input_len = strlen(input);
     int target_len = strlen(target);
-    int cursor_len = 0; //azon a szavon bel¸l, ahol a kurzor ·ll, a kurzor helyzete
-    int cursor_index = get_cursor_index(text, target_index, input_len, &cursor_len); //megadja melyik szÛban ·ll a kurzor, valamint be·llÌtja cursor_len-t
+    int cursor_len = 0; //azon a szavon bel√ºl, ahol a kurzor √°ll, a kurzor helyzete
+    int cursor_index = get_cursor_index(text, target_index, input_len, &cursor_len); //megadja melyik sz√≥ban √°ll a kurzor, valamint be√°ll√≠tja cursor_len-t
     render_cursor(text, word_rects, font, cursor_index, cursor_len, renderer);
     SDL_Rect rect;
     int i;
     for (i=0; i<target_index; i++) {
-        //a jÛl begÈpelt szavakat zˆlddel Ìrjuk ki
+        //a j√≥l beg√©pelt szavakat z√∂lddel √≠rjuk ki
         word = text.words[i];
         rect = word_rects[i];
         render_string_to_rect_blended(add_space(display_str, word), color2, font, rect, renderer);
     }
-    /*a helyesen begÈpelt szavak ut·n a kˆvetkezık a teendık:
-    -az aktÌv szÛt al· kell h˙zni
-    -a jÛ inputokat zˆlddel kell jelezni
-    -a rossz inputokat piros h·ttÈrrel kell jelezni
-    -a mÈg nem begÈpelt szˆveget feketÈvel kell jelezni
-    -lehet csak piros is, csak zˆld is, csak fekete is, sıt ezeknek kombin·ciÛi
-    -a piros Ès fekete szavak hat·ra lehet az al·h˙zott rÈszen is, de lehet a nem al·h˙zott rÈszen is*/
-    int x = word_rects[i].x; //a kˆvetkezı leÌrandÛ szˆvegrÈsz x koordin·t·ja
-    int y = word_rects[i].y; //a kˆvetkezı leÌrandÛ szˆvegrÈsz y koordin·t·ja
-    int green_target_len = match_len(target, input); //az al·h˙zott szÛ zˆld rÈsze
-    int red_target_len = input_len <= target_len? input_len - green_target_len : target_len - green_target_len; //az al·h˙zott szÛ piros rÈsze
-    int red_len = input_len - green_target_len - red_target_len; //a NEM al·h˙zott szÛ/szavak piros rÈsze
-    int black_target_len = target_len - green_target_len - red_target_len; //az al·h˙zott szÛ fekete rÈsze
-    if (green_target_len) { //zˆlddel al·h˙zott rÈsz
+    /*a helyesen beg√©pelt szavak ut√°n a k√∂vetkez√µk a teend√µk:
+    -az akt√≠v sz√≥t al√° kell h√∫zni
+    -a j√≥ inputokat z√∂lddel kell jelezni
+    -a rossz inputokat piros h√°tt√©rrel kell jelezni
+    -a m√©g nem beg√©pelt sz√∂veget feket√©vel kell jelezni
+    -lehet csak piros is, csak z√∂ld is, csak fekete is, s√µt ezeknek kombin√°ci√≥i
+    -a piros √©s fekete szavak hat√°ra lehet az al√°h√∫zott r√©szen is, de lehet a nem al√°h√∫zott r√©szen is*/
+    int x = word_rects[i].x; //a k√∂vetkez√µ le√≠rand√≥ sz√∂vegr√©sz x koordin√°t√°ja
+    int y = word_rects[i].y; //a k√∂vetkez√µ le√≠rand√≥ sz√∂vegr√©sz y koordin√°t√°ja
+    int green_target_len = match_len(target, input); //az al√°h√∫zott sz√≥ z√∂ld r√©sze
+    int red_target_len = input_len <= target_len? input_len - green_target_len : target_len - green_target_len; //az al√°h√∫zott sz√≥ piros r√©sze
+    int red_len = input_len - green_target_len - red_target_len; //a NEM al√°h√∫zott sz√≥/szavak piros r√©sze
+    int black_target_len = target_len - green_target_len - red_target_len; //az al√°h√∫zott sz√≥ fekete r√©sze
+    if (green_target_len) { //z√∂lddel al√°h√∫zott r√©sz
         strcpy(display_str, target);
         display_str[green_target_len] = '\0';
         rect = render_string_blended(display_str, color2, underlined, x, y, renderer, TopLeft);
         x += rect.w;
-    } //pirossal al·h˙zott rÈsz
+    } //pirossal al√°h√∫zott r√©sz
     if (red_target_len) {
         strcpy(display_str, target+green_target_len);
         display_str[red_target_len] = '\0';
         rect = render_string_shaded(display_str, color1, color3, underlined, x, y, renderer, TopLeft);
         x += rect.w;
-    } //feketÈvel al·h˙zott rÈsz
+    } //feket√©vel al√°h√∫zott r√©sz
     if (black_target_len) {
         strcpy(display_str, target+green_target_len+red_target_len);
         rect = render_string_blended(display_str, color1, underlined, x, y, renderer, TopLeft);
         x += rect.w;
-    } //ha volt mÈg piros rÈsz az al·h˙zott szÛ ut·n, attÛl mÈg az ut·na lÈvı szÛkˆz nincs al·h˙zva!
+    } //ha volt m√©g piros r√©sz az al√°h√∫zott sz√≥ ut√°n, att√≥l m√©g az ut√°na l√©v√µ sz√≥k√∂z nincs al√°h√∫zva!
     if (red_len) {
         rect = word_rects[i];
         SDL_Rect space_rect = {x, y, rect.x + rect.w - x, rect.h};
@@ -256,17 +250,17 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
     } else {
         red_len = 0;
     }
-    //addig Ìrunk piros h·ttÈrrel szavakat, amÌg az ˆsszes helytelen karaktert ki nem szÌnezt¸k
+    //addig √≠runk piros h√°tt√©rrel szavakat, am√≠g az √∂sszes helytelen karaktert ki nem sz√≠nezt√ºk
     while (red_len) {
         rect = word_rects[i];
         word = text.words[i];
         int word_len = strlen(word);
-        if (red_len > word_len) { //az egÈsz szÛ helytelen (piros)
+        if (red_len > word_len) { //az eg√©sz sz√≥ helytelen (piros)
             strcpy(display_str, word);
             strcat(display_str, " ");
             render_string_to_rect_shaded(display_str, color1, color3, font, rect, renderer);
             red_len -= (word_len + 1);
-        } else { //a szÛ egy rÈsze piros, egy rÈsze fekete
+        } else { //a sz√≥ egy r√©sze piros, egy r√©sze fekete
             strcpy(display_str, word);
             display_str[red_len] ='\0';
             x = rect.x;
@@ -280,7 +274,7 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
         i++;
     }
     for (i=cursor_index+1; i<text.word_count; i++) {
-        //a mÈg nem begÈpelt szavakat feketÈvel Ìrjuk ki
+        //a m√©g nem beg√©pelt szavakat feket√©vel √≠rjuk ki
         word = text.words[i];
         rect = word_rects[i];
         render_string_to_rect_blended(add_space(display_str, word), color1, font, rect, renderer);
@@ -288,18 +282,18 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
 
 }
 
-//kirajzol egy kocsi ·br·t
+//kirajzol egy kocsi √°br√°t, ahol a kocsi bal fels≈ë sarka (x,y), sz√©less√©ge w, magass√°ga h
 void render_car(SDL_Renderer* renderer, SDL_Color color1, SDL_Color color2, int x, int y, int w, int h) {
     Sint16 vx[8] = {x, x, x+w/8, x+w*3/8, x+w*5/8, x+w*7/8, x+w, x+w};
     Sint16 vy[8]= {y+h*4/5, y+h*2/5, y+h*2/5, y, y, y+h*2/5, y+h*2/5, y+h*4/5};
     filledPolygonRGBA(renderer, vx, vy, 8, color1.r, color1.g, color1.b, 255); //test
-    polygonRGBA(renderer, vx, vy, 8, color2.r, color2.g, color2.b, 255); //test kˆrvonal
-    filledCircleRGBA(renderer, x+w/4, y+h*4/5, h/5, color1.r, color1.g, color1.b, 255); //bal kerÈk
-    filledCircleRGBA(renderer, x+w/4, y+h*4/5, h/10, color2.r, color2.g, color2.b, 255); //bal kerÈk tengely
-    circleRGBA(renderer, x+w/4, y+h*4/5, h/5, color2.r, color2.g, color2.b, 255); //bal kerÈk kˆrvonal
-    filledCircleRGBA(renderer, x+w/4*3, y+h*4/5, h/5, color1.r, color1.g, color1.b, 255); //jobb kerÈk
-    filledCircleRGBA(renderer, x+w/4*3, y+h*4/5, h/10, color2.r, color2.g, color2.b, 255); //jobb kerÈk tengely
-    circleRGBA(renderer, x+w/4*3, y+h*4/5, h/5, color2.r, color2.g, color2.b, 255); //jobb kerÈk kˆrvonal
+    polygonRGBA(renderer, vx, vy, 8, color2.r, color2.g, color2.b, 255); //test k√∂rvonal
+    filledCircleRGBA(renderer, x+w/4, y+h*4/5, h/5, color1.r, color1.g, color1.b, 255); //bal ker√©k
+    filledCircleRGBA(renderer, x+w/4, y+h*4/5, h/10, color2.r, color2.g, color2.b, 255); //bal ker√©k tengely
+    circleRGBA(renderer, x+w/4, y+h*4/5, h/5, color2.r, color2.g, color2.b, 255); //bal ker√©k k√∂rvonal
+    filledCircleRGBA(renderer, x+w/4*3, y+h*4/5, h/5, color1.r, color1.g, color1.b, 255); //jobb ker√©k
+    filledCircleRGBA(renderer, x+w/4*3, y+h*4/5, h/10, color2.r, color2.g, color2.b, 255); //jobb ker√©k tengely
+    circleRGBA(renderer, x+w/4*3, y+h*4/5, h/5, color2.r, color2.g, color2.b, 255); //jobb ker√©k k√∂rvonal
     //hatso ablak:
     Sint16 vx_hablak[3] = {x+w*1.7/8, x+w*3.25/8, x+w*3.25/8};
     Sint16 vy_hablak[3] = {y+h*1.75/5, y+h*0.25/5, y+h*1.75/5};
@@ -312,5 +306,82 @@ void render_car(SDL_Renderer* renderer, SDL_Color color1, SDL_Color color2, int 
     Sint16 vx_eablak[3] = {x+w*4.75/8, x+w*6.3/8, x+w*4.75/8,};
     Sint16 vy_eablak[3] = {y+h*0.25/5, y+h*1.75/5, y+h*1.75/5};
     filledPolygonRGBA(renderer, vx_eablak, vy_eablak, 3, color2.r, color2.g, color2.g, 255);
+}
 
+/*Vizualiz√°lja a ranglist√°t, color1 sz√≠nnel a bet≈±i, color2 sz√≠nnel a h√°tt√©r*/
+void render_leaderboard(GameData* game_data, SDL_Color color1, SDL_Color color2) {
+    int top = (int)(game_data->margo);
+    int bottom = (int)(game_data->magas - game_data->margo);
+    int left = (int)(game_data->szeles*0.4 + game_data->margo);
+    int right = (int)(game_data->szeles - game_data->margo);
+    LeaderBoard leaderboard = game_data->leaderboard;
+    TTF_Font* font = game_data->font;
+    SDL_Renderer* renderer = game_data->renderer;
+    boxRGBA(renderer, left, top, right, bottom, color2.r, color2.g, color2.b, 255);
+    rectangleRGBA(renderer, left, top, right, bottom, color1.r, color1.g, color1.b, 255);
+    SDL_Rect rect = render_string_blended("Ranglista:", color1, font, left, top, renderer, TopLeft);
+    hlineRGBA(renderer, left, right, game_data->margo+60, color1.r, color1.g, color1.b, 255);
+    top += rect.h + game_data->margo;
+    int h = (bottom - top) / LEADERBOARD_SIZE;
+    for (int i=0; i<leaderboard.num; i++) {
+        //rectangleRGBA(renderer, left, top+h*i, right, top+h*(i+1), color1.r, color1.g, color1.b, 255);
+        char display_str[2*HOSSZ];
+        sprintf(display_str, "%d.: %s, WPM: %.2f", i+1, leaderboard.entries[i].name, leaderboard.entries[i].wpm);
+        render_string_blended(display_str, color1, font, (left+right)/2, top+h*(i+0.5), renderer, Middle);
+    }
+}
+
+/*Vizualiz√°l egy gombot, vigy√°zat, ha a sz√∂veg t√∫l nagy, kil√≥ghat a doboz√°b√≥l a gombnak!*/
+void render_button(Button button, SDL_Renderer* renderer, TTF_Font *font) {
+    SDL_Rect text_rect;
+    text_rect.x = button.rect.x + button.rect.w * 0.1;
+    text_rect.y = button.rect.y + button.rect.h * 0.1;
+    text_rect.w = button.rect.w * 0.8;
+    text_rect.h = button.rect.h * 0.8;
+    boxRGBA(renderer, button.rect.x, button.rect.y, button.rect.x + button.rect.w, button.rect.y + button.rect.h, button.color.r, button.color.g, button.color.b, 255);
+    rectangleRGBA(renderer, button.rect.x, button.rect.y, button.rect.x + button.rect.w, button.rect.y + button.rect.h, 0, 0, 0, 255);
+    render_string_blended(button.str, button.str_color, font, text_rect.x+text_rect.w/2, text_rect.y + text_rect.h/2, renderer, Middle);
+}
+
+/*Kirajzolja a piros-s√°rga-z√∂ld l√°mp√°t, l√©pteti a c√≠mk√©nt √°tvett countdown v√°ltoz√≥t, √©s
+√°t√°ll√≠tja igaz-ra a c√≠mk√©nt √°tvett countdown_over v√°ltoz√≥t, ha lej√°rt a visszasz√°ml√°l√°s*/
+void handle_countdown_s(bool* countdown_over, SDL_Rect rect, int* countdown, TTF_Font *font, clock_t* t, SDL_Renderer* renderer) {
+    if (countdown >= 0) {
+        SDL_Color sarga = {255, 255, 0};
+        SDL_Color zold = {0, 255, 0};
+        SDL_Color piros = {255, 50, 50};
+        SDL_Color szurke = {195, 195, 195};
+        SDL_Color sotet_szurke = {100, 100, 100};
+        SDL_Color fekete = {0, 0, 0};
+        SDL_Color color;
+        boxRGBA(renderer, rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, szurke.r, szurke.g, szurke.b, 255);
+        rectangleRGBA(renderer, rect.x, rect.y, rect.x + rect.w, rect.y + rect.h, fekete.r, fekete.g, fekete.b, 255);
+        char num[HOSSZ] = "";
+        sprintf(num, "%.2d", *countdown);
+        render_string_blended(num, fekete, font, rect.x + rect.w*7/8, rect.y + rect.h/2, renderer, Middle);
+        if (*countdown > 3) {
+            color = piros;
+        } else {
+            color = sotet_szurke;
+        }
+        filledCircleRGBA(renderer, rect.x + rect.w*5/8, rect.y + rect.h/2, rect.w/8.5, color.r, color.g, color.b, 255);
+        circleRGBA(renderer, rect.x + rect.w*5/8, rect.y + rect.h/2, rect.w/8.5, fekete.r, fekete.g, fekete.b, 255);
+        if (*countdown <= 3 && *countdown >0) {
+            color = sarga;
+        } else {
+            color = sotet_szurke;
+        }
+        filledCircleRGBA(renderer, rect.x + rect.w*3/8, rect.y + rect.h/2, rect.w/8.5, color.r, color.g, color.b, 255);
+        circleRGBA(renderer, rect.x + rect.w*3/8, rect.y + rect.h/2, rect.w/8.5, fekete.r, fekete.g, fekete.b, 255);
+        if (*countdown == 0) {
+            color = zold;
+            *countdown_over = true;
+            *t = clock();
+        } else {
+            color = sotet_szurke;
+        }
+        filledCircleRGBA(renderer, rect.x + rect.w/8, rect.y + rect.h/2, rect.w/8.5, color.r, color.g, color.b, 255);
+        circleRGBA(renderer, rect.x + rect.w/8, rect.y + rect.h/2, rect.w/8.5, fekete.r, fekete.g, fekete.b, 255);
+        *countdown -= 1;
+    }
 }

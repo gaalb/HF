@@ -1,11 +1,3 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
-#include <SDL2/SDL_ttf.h>
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
-#include "debugmalloc.h"
 #include "text.h"
 
 //standard outputra rakja ki a textet
