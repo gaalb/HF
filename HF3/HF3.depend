@@ -388,7 +388,8 @@
 	"debugmalloc.h"
 	"types.h"
 
-1700511014 source:d:\prog\hf\hf3\main.c
+1700686785 source:d:\prog\hf\hf3\main.c
+	<SDL2/SDL.h>
 	<SDL2/SDL2_gfxPrimitives.h>
 	<SDL2/SDL_ttf.h>
 	<math.h>
@@ -402,7 +403,7 @@
 	"constants.h"
 	"leaderboard.h"
 
-1700497589 d:\prog\hf\hf3\custom_renders.h
+1700676725 d:\prog\hf\hf3\custom_renders.h
 	<SDL2/SDL.h>
 	<SDL2/SDL2_gfxPrimitives.h>
 	<SDL2/SDL_ttf.h>
@@ -414,9 +415,9 @@
 	"engine.h"
 	"types.h"
 
-1700493941 d:\prog\hf\hf3\constants.h
+1700589413 d:\prog\hf\hf3\constants.h
 
-1700509305 source:d:\prog\hf\hf3\custom_renders.c
+1700676715 source:d:\prog\hf\hf3\custom_renders.c
 	"custom_renders.h"
 
 1700497596 d:\prog\hf\hf3\leaderboard.h
@@ -432,7 +433,7 @@
 	"constants.h"
 	"types.h"
 
-1700504373 d:\prog\hf\hf3\engine.h
+1700687249 d:\prog\hf\hf3\engine.h
 	<SDL2/SDL.h>
 	<SDL2/SDL2_gfxPrimitives.h>
 	<SDL2/SDL_ttf.h>
@@ -451,7 +452,7 @@
 1700506806 source:d:\prog\hf\hf3\leaderboard.c
 	"leaderboard.h"
 
-1700507541 d:\prog\hf\hf3\types.h
+1700685169 d:\prog\hf\hf3\types.h
 	<SDL2/SDL.h>
 	<SDL2/SDL2_gfxPrimitives.h>
 	<SDL2/SDL_ttf.h>
@@ -464,6 +465,6 @@
 	"debugmalloc.h"
 	"constants.h"
 
-1700504327 source:d:\prog\hf\hf3\engine.c
+1700687206 source:d:\prog\hf\hf3\engine.c
 	"engine.h"
 

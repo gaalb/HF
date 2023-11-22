@@ -88,6 +88,11 @@ SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x
             rect.x = x - rect.w/2;
             rect.y = y - rect.h/2;
             break;
+        case Right:
+            rect.y = y - rect.h/2;
+            rect.x = x - rect.w;
+            break;
+
     }
     x += rect.w;
     SDL_Texture* word_t = SDL_CreateTextureFromSurface(renderer, word_s);
@@ -282,30 +287,32 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
 
 }
 
-//kirajzol egy kocsi ábrát, ahol a kocsi bal felső sarka (x,y), szélessége w, magassága h
-void render_car(SDL_Renderer* renderer, SDL_Color color1, SDL_Color color2, int x, int y, int w, int h) {
-    Sint16 vx[8] = {x, x, x+w/8, x+w*3/8, x+w*5/8, x+w*7/8, x+w, x+w};
-    Sint16 vy[8]= {y+h*4/5, y+h*2/5, y+h*2/5, y, y, y+h*2/5, y+h*2/5, y+h*4/5};
-    filledPolygonRGBA(renderer, vx, vy, 8, color1.r, color1.g, color1.b, 255); //test
-    polygonRGBA(renderer, vx, vy, 8, color2.r, color2.g, color2.b, 255); //test körvonal
-    filledCircleRGBA(renderer, x+w/4, y+h*4/5, h/5, color1.r, color1.g, color1.b, 255); //bal kerék
-    filledCircleRGBA(renderer, x+w/4, y+h*4/5, h/10, color2.r, color2.g, color2.b, 255); //bal kerék tengely
-    circleRGBA(renderer, x+w/4, y+h*4/5, h/5, color2.r, color2.g, color2.b, 255); //bal kerék körvonal
-    filledCircleRGBA(renderer, x+w/4*3, y+h*4/5, h/5, color1.r, color1.g, color1.b, 255); //jobb kerék
-    filledCircleRGBA(renderer, x+w/4*3, y+h*4/5, h/10, color2.r, color2.g, color2.b, 255); //jobb kerék tengely
-    circleRGBA(renderer, x+w/4*3, y+h*4/5, h/5, color2.r, color2.g, color2.b, 255); //jobb kerék körvonal
+//kirajzol egy kocsit
+void render_car(SDL_Renderer* renderer, Car car, TTF_Font* font) {
+    Sint16 vx[8] = {car.x, car.x, car.x+car.w/8, car.x+car.w*3/8, car.x+car.w*5/8, car.x+car.w*7/8, car.x+car.w, car.x+car.w};
+    Sint16 vy[8]= {car.y+car.h*4/5, car.y+car.h*2/5, car.y+car.h*2/5, car.y, car.y, car.y+car.h*2/5, car.y+car.h*2/5, car.y+car.h*4/5};
+    filledPolygonRGBA(renderer, vx, vy, 8, car.color1.r, car.color1.g, car.color1.b, 255); //test
+    polygonRGBA(renderer, vx, vy, 8, car.color2.r, car.color2.g, car.color2.b, 255); //test körvonal
+    filledCircleRGBA(renderer, car.x+car.w/4, car.y+car.h*4/5, car.h/5, car.color1.r, car.color1.g, car.color1.b, 255); //bal kerék
+    filledCircleRGBA(renderer, car.x+car.w/4, car.y+car.h*4/5, car.h/10, car.color2.r, car.color2.g, car.color2.b, 255); //bal kerék tengely
+    circleRGBA(renderer, car.x+car.w/4, car.y+car.h*4/5, car.h/5, car.color2.r, car.color2.g, car.color2.b, 255); //bal kerék körvonal
+    filledCircleRGBA(renderer, car.x+car.w/4*3, car.y+car.h*4/5, car.h/5, car.color1.r, car.color1.g, car.color1.b, 255); //jobb kerék
+    filledCircleRGBA(renderer, car.x+car.w/4*3, car.y+car.h*4/5, car.h/10, car.color2.r, car.color2.g, car.color2.b, 255); //jobb kerék tengely
+    circleRGBA(renderer, car.x+car.w/4*3, car.y+car.h*4/5, car.h/5, car.color2.r, car.color2.g, car.color2.b, 255); //jobb kerék körvonal
     //hatso ablak:
-    Sint16 vx_hablak[3] = {x+w*1.7/8, x+w*3.25/8, x+w*3.25/8};
-    Sint16 vy_hablak[3] = {y+h*1.75/5, y+h*0.25/5, y+h*1.75/5};
-    filledPolygonRGBA(renderer, vx_hablak, vy_hablak, 3, color2.r, color2.g, color2.g, 255);
+    Sint16 vx_hablak[3] = {car.x+car.w*1.7/8, car.x+car.w*3.25/8, car.x+car.w*3.25/8};
+    Sint16 vy_hablak[3] = {car.y+car.h*1.75/5, car.y+car.h*0.25/5, car.y+car.h*1.75/5};
+    filledPolygonRGBA(renderer, vx_hablak, vy_hablak, 3, car.color2.r, car.color2.g, car.color2.g, 255);
     //kozepso ablak:
-    Sint16 vx_kablak[4] = {x+w*3.4/8, x+w*4.6/8, x+w*4.6/8, x+w*3.4/8};
-    Sint16 vy_kablak[4] = {y+h*0.25/5, y+h*0.25/5, y+h*1.75/5, y+h*1.75/5};
-    filledPolygonRGBA(renderer, vx_kablak, vy_kablak, 4, color2.r, color2.g, color2.g, 255);
+    Sint16 vx_kablak[4] = {car.x+car.w*3.4/8, car.x+car.w*4.6/8, car.x+car.w*4.6/8, car.x+car.w*3.4/8};
+    Sint16 vy_kablak[4] = {car.y+car.h*0.25/5, car.y+car.h*0.25/5, car.y+car.h*1.75/5, car.y+car.h*1.75/5};
+    filledPolygonRGBA(renderer, vx_kablak, vy_kablak, 4, car.color2.r, car.color2.g, car.color2.g, 255);
     //elso ablak:
-    Sint16 vx_eablak[3] = {x+w*4.75/8, x+w*6.3/8, x+w*4.75/8,};
-    Sint16 vy_eablak[3] = {y+h*0.25/5, y+h*1.75/5, y+h*1.75/5};
-    filledPolygonRGBA(renderer, vx_eablak, vy_eablak, 3, color2.r, color2.g, color2.g, 255);
+    Sint16 vx_eablak[3] = {car.x+car.w*4.75/8, car.x+car.w*6.3/8, car.x+car.w*4.75/8,};
+    Sint16 vy_eablak[3] = {car.y+car.h*0.25/5, car.y+car.h*1.75/5, car.y+car.h*1.75/5};
+    filledPolygonRGBA(renderer, vx_eablak, vy_eablak, 3, car.color2.r, car.color2.g, car.color2.g, 255);
+    SDL_Color fekete = {0, 0, 0};
+    render_string_blended(car.name, fekete, font, car.x, car.y+car.h/2, renderer, Right);
 }
 
 /*Vizualizálja a ranglistát, color1 színnel a betűi, color2 színnel a háttér*/
@@ -319,7 +326,7 @@ void render_leaderboard(GameData* game_data, SDL_Color color1, SDL_Color color2)
     SDL_Renderer* renderer = game_data->renderer;
     boxRGBA(renderer, left, top, right, bottom, color2.r, color2.g, color2.b, 255);
     rectangleRGBA(renderer, left, top, right, bottom, color1.r, color1.g, color1.b, 255);
-    SDL_Rect rect = render_string_blended("Ranglista:", color1, font, left, top, renderer, TopLeft);
+    SDL_Rect rect = render_string_blended("Leaderboard:", color1, font, left, top, renderer, TopLeft);
     hlineRGBA(renderer, left, right, game_data->margo+60, color1.r, color1.g, color1.b, 255);
     top += rect.h + game_data->margo;
     int h = (bottom - top) / LEADERBOARD_SIZE;
@@ -383,5 +390,47 @@ void handle_countdown_s(bool* countdown_over, SDL_Rect rect, int* countdown, TTF
         filledCircleRGBA(renderer, rect.x + rect.w/8, rect.y + rect.h/2, rect.w/8.5, color.r, color.g, color.b, 255);
         circleRGBA(renderer, rect.x + rect.w/8, rect.y + rect.h/2, rect.w/8.5, fekete.r, fekete.g, fekete.b, 255);
         *countdown -= 1;
+    }
+}
+
+/*Vizualizálja a játékosokat, color1 színnel a betűi, color2 színnel a háttér*/
+void render_players(GameData* game_data, SDL_Color color1, SDL_Color color2) {
+    int top = (int)(game_data->margo);
+    int bottom = (int)(game_data->magas - game_data->margo);
+    int left = (int)(game_data->szeles*0.5 + game_data->margo);
+    int right = (int)(game_data->szeles - game_data->margo);
+    TTF_Font* font = game_data->font;
+    SDL_Renderer* renderer = game_data->renderer;
+    boxRGBA(renderer, left, top, right, bottom, color2.r, color2.g, color2.b, 255);
+    rectangleRGBA(renderer, left, top, right, bottom, color1.r, color1.g, color1.b, 255);
+    SDL_Rect rect = render_string_blended("Players:", color1, font, left, top, renderer, TopLeft);
+    top += rect.h + game_data->margo;
+    int h = (bottom - top) / 8;
+    for (int i=0; i<5; i++) {
+        rectangleRGBA(renderer, left, top+h*i, right, top+h*(i+1), color1.r, color1.g, color1.b, 255);
+    }
+    for (int i=0; i<game_data->players; i++) {
+        render_string_blended(game_data->multis[i].car.name, color1, font, (left+right)/2, top+h*(i+0.5), renderer, Middle);
+    }
+}
+
+/*Vizualizálja a botokhoz tartozó beállításokat, color1 színnel a betűket, color2-vel a hátteret*/
+void render_settings(GameData* game_data, SDL_Color color1, SDL_Color color2) {
+    int top = (int)(game_data->margo);
+    int bottom = (int)(game_data->magas - game_data->margo);
+    int left = (int)(game_data->margo);
+    int right = (int)(game_data->szeles*0.4);
+    TTF_Font* font = game_data->font;
+    SDL_Renderer* renderer = game_data->renderer;
+    boxRGBA(renderer, left, top, right, bottom, color2.r, color2.g, color2.b, 255);
+    rectangleRGBA(renderer, left, top, right, bottom, color1.r, color1.g, color1.b, 255);
+    SDL_Rect rect = render_string_blended("Settings:", color1, font, left, top, renderer, TopLeft);
+    hlineRGBA(renderer, left, right, game_data->margo+60, color1.r, color1.g, color1.b, 255);
+    top += rect.h + game_data->margo;
+    int h = (bottom-top) / LEADERBOARD_SIZE; //esztétkailag ez a szép, habár nincs köze a ranglistához
+    for (int i=0; i<4; i++) {
+        char display_str[2*HOSSZ];
+        sprintf(display_str, "%s WPM: %.0f", game_data->bots[i].car.name, game_data->bots[i].expected_wpm);
+        render_string_blended(display_str, color1, font, (left+right)/2, top+h*(i+0.5), renderer, Middle);
     }
 }

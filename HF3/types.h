@@ -13,16 +13,25 @@
 #include "debugmalloc.h"
 #include "constants.h"
 
+typedef struct Car {
+    int x, y, w, h;
+    SDL_Color color1;
+    SDL_Color color2;
+    char name[HOSSZ];
+} Car;
+
 typedef struct Bot {
     double expected_wpm;
-    int spread_ms;
     int ms;
-    char name[HOSSZ];
+    Car car;
+    SDL_EventType tick;
+    bool active;
 } Bot;
 
-typedef enum {
+typedef enum  Position {
     TopLeft = 0,
-    Middle = 1
+    Middle = 1,
+    Right = 2
 } Position;
 
 typedef struct LeaderboardEntry {
@@ -50,9 +59,12 @@ typedef struct TextArray {
 typedef enum {
     MainMenu = 0,
     SingleGame = 1,
-    Settings = 2,
-    Statistics = 3,
-    AskName = 4
+    BotGame = 2,
+    MultiGame = 3,
+    Settings = 4,
+    Statistics = 5,
+    MultiStatistics = 6,
+    AskName = 7
 } GameView;
 
 typedef struct Stats {
@@ -72,9 +84,10 @@ typedef struct GameData {
     const int magas;
     const int szeles;
     const int margo;
-    const int kocsi_w;
-    const int kocsi_h;
     Bot* bots;
+    Bot* multis;
+    int players;
+    Car player_car;
 } GameData;
 
 typedef struct Button {

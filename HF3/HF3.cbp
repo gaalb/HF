@@ -52,6 +52,14 @@
 		</Unit>
 		<Unit filename="custom_renders.h" />
 		<Unit filename="debugmalloc.h" />
+		<Unit filename="engine.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="engine.h" />
+		<Unit filename="leaderboard.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="leaderboard.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -59,6 +67,7 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="text.h" />
+		<Unit filename="types.h" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

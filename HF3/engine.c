@@ -6,7 +6,7 @@
  * A masodik a maximális hossz, ami beolvasható.
  * A visszateresi erteke logikai igaz, ha sikerult a beolvasas.
  * MEGJ: ez a fuggveny infoC-rol lett kimasolva, ez megengedett a hazi feladat soran*/
-bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, SDL_Color szoveg, TTF_Font *font, SDL_Renderer *renderer) {
+bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, SDL_Color szoveg, TTF_Font *font, SDL_Renderer *renderer, bool* escape) {
     /* Ez tartalmazza az aktualis szerkesztest */
     char composition[SDL_TEXTEDITINGEVENT_TEXT_SIZE];
     composition[0] = '\0';
@@ -79,6 +79,11 @@ bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, S
                 if (event.key.keysym.sym == SDLK_RETURN) {
                     enter = true;
                 }
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    *escape = true;
+                    kilep = true;
+                    return false;
+                }
                 break;
 
             /* A feldolgozott szoveg bemenete */
@@ -104,7 +109,6 @@ bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, S
                 break;
         }
     }
-
     /* igaz jelzi a helyes beolvasast; = ha enter miatt allt meg a ciklus */
     SDL_StopTextInput();
     return enter;
