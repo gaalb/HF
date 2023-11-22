@@ -27,13 +27,14 @@ def extract_chunks(input, output_long, output_short):
         else:
             if char in allowed_characters or char.isalpha():
                 chunk += char
-                if len(chunk) > 100 and char in ".!?":
+                if len(chunk) > 120 and char in ".!?":
                     # header = f"Len: {len(chunk)}, WordLen: {max(len(word) for word in chunk.split())}\n"
                     header = f"WordCount: {len(chunk.split())}\n"
                     chunks.append(header + chunk)
                     chunk = ""
             else:
                 chunk = ""
+    chunks = [chunk for chunk in chunks if len(chunk) < 200]
     print(f"Number of chunks: {len(chunks)}")
     header = f"TextCount: {len(chunks)}\n"
     with open(output_long, 'w', encoding='utf-8') as output_file:

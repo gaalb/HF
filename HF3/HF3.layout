@@ -2,72 +2,91 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="main.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="debugmalloc.h" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="19915" topLine="466" />
+			<Cursor1 position="13204" topLine="337" />
 		</Cursor>
-		<Folding>
-			<Collapse line="20" />
-			<Collapse line="153" />
-			<Collapse line="158" />
-			<Collapse line="163" />
-			<Collapse line="168" />
-			<Collapse line="173" />
-			<Collapse line="178" />
-			<Collapse line="183" />
-			<Collapse line="188" />
-			<Collapse line="193" />
-			<Collapse line="576" />
-		</Folding>
 	</File>
-	<File name="leaderboard.c" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="types.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="765" topLine="27" />
+		</Cursor>
+	</File>
+	<File name="constants.h" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="209" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="leaderboard.c" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="4617" topLine="88" />
 		</Cursor>
 	</File>
 	<File name="custom_renders.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="866" topLine="0" />
+			<Cursor1 position="2237" topLine="11" />
 		</Cursor>
 	</File>
-	<File name="engine.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="engine.h" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="298" topLine="0" />
+			<Cursor1 position="2197" topLine="33" />
 		</Cursor>
 	</File>
-	<File name="debugmalloc.h" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="engine.c" open="1" top="1" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="13957" topLine="337" />
+			<Cursor1 position="37600" topLine="170" />
+		</Cursor>
+		<Folding>
+			<Collapse line="8" />
+			<Collapse line="117" />
+			<Collapse line="144" />
+			<Collapse line="167" />
+			<Collapse line="178" />
+			<Collapse line="190" />
+			<Collapse line="196" />
+			<Collapse line="204" />
+			<Collapse line="212" />
+			<Collapse line="220" />
+			<Collapse line="228" />
+			<Collapse line="236" />
+			<Collapse line="241" />
+			<Collapse line="246" />
+			<Collapse line="251" />
+			<Collapse line="256" />
+			<Collapse line="261" />
+			<Collapse line="266" />
+			<Collapse line="271" />
+			<Collapse line="276" />
+			<Collapse line="281" />
+			<Collapse line="289" />
+			<Collapse line="302" />
+			<Collapse line="309" />
+			<Collapse line="464" />
+			<Collapse line="504" />
+			<Collapse line="557" />
+			<Collapse line="573" />
+			<Collapse line="577" />
+			<Collapse line="691" />
+			<Collapse line="740" />
+		</Folding>
+	</File>
+	<File name="text.c" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="492" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="text.c" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="main.c" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="0" topLine="71" />
+			<Cursor1 position="3082" topLine="23" />
 		</Cursor>
+		<Folding>
+			<Collapse line="25" />
+			<Collapse line="69" />
+		</Folding>
 	</File>
-	<File name="types.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="custom_renders.c" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="222" topLine="3" />
-		</Cursor>
-	</File>
-	<File name="text.h" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="264" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="leaderboard.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="302" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="constants.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="345" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="custom_renders.c" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="14757" topLine="27" />
+			<Cursor1 position="21216" topLine="214" />
 		</Cursor>
 		<Folding>
 			<Collapse line="3" />
@@ -75,26 +94,20 @@
 			<Collapse line="21" />
 			<Collapse line="27" />
 			<Collapse line="57" />
-			<Collapse line="66" />
-			<Collapse line="76" />
-			<Collapse line="101" />
-			<Collapse line="117" />
-			<Collapse line="133" />
-			<Collapse line="157" />
+			<Collapse line="138" />
 			<Collapse line="162" />
-			<Collapse line="194" />
-			<Collapse line="285" />
-			<Collapse line="311" />
-			<Collapse line="334" />
-			<Collapse line="347" />
+			<Collapse line="167" />
+			<Collapse line="199" />
 		</Folding>
 	</File>
-	<File name="engine.c" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="leaderboard.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="5579" topLine="18" />
+			<Cursor1 position="302" topLine="0" />
 		</Cursor>
-		<Folding>
-			<Collapse line="8" />
-		</Folding>
+	</File>
+	<File name="text.h" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="264" topLine="0" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

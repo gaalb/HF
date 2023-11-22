@@ -1,39 +1,15 @@
 TextCount: 100
-WordCount: 21
-It had a perfectly round door like a porthole, painted green, with a shiny yellow brass knob in the exact middle.
-
 WordCount: 31
 Baggins would say on any question without the bother of asking him. This is a story of how a Baggins had an adventure, found himself doing and saying things altogether unexpected.
 
 WordCount: 22
 I suppose hobbits need some description nowadays, since they have become rare and shy of the Big People, as they call us.
 
-WordCount: 49
-Dwarves. Hobbits have no beards. There is little or no magic about them, except the ordinary everyday sort which helps them to disappear quietly and quickly when large stupid folk like you and me come blundering along, making a noise like elephants which they can hear a mile off.
-
 WordCount: 32
 Belladonna Took, one of the three remarkable daughters of the Old Took, head of the hobbits who lived across The Water, the small river that ran at the foot of The Hill.
 
 WordCount: 28
 They discreetly disappeared, and the family hushed it up; but the fact remained that the Tooks were not as respectable as the Bagginses, though they were undoubtedly richer.
-
-WordCount: 67
-The Hill or over The Hill or across The Water, and there they remained to the end of their days. Still it is probable that Bilbo, her only son, although he looked and behaved exactly like a second edition of his solid and comfortable father, got something a bit queer in his makeup from the Took side, something that only waited for a chance to come out.
-
-WordCount: 42
-Gandalf came by. Gandalf! If you had heard only a quarter of what I have heard about him, and I have only heard very little of all there is to hear, you would be prepared for any sort I of remarkable tale.
-
-WordCount: 17
-Tales and adventures sprouted up all over the place wherever he went, in the most extraordinary fashion.
-
-WordCount: 34
-He had not been down that way under The Hill for ages and ages, not since his friend the Old Took died, in fact, and the hobbits had almost forgotten what he looked like.
-
-WordCount: 43
-All that the unsuspecting Bilbo saw that morning was an old man with a staff. He had a tall pointed blue hat, a long grey cloak, a silver scarf over which a white beard hung down below his waist, and immense black boots.
-
-WordCount: 36
-Bilbo, and he meant it. The sun was shining, and the grass was very green. But Gandalf looked at him from under long bushy eyebrows that stuck out further than the brim of his shady hat.
 
 WordCount: 35
 Do you wish me a good morning, or mean that it is a good morning whether I want not; or that you feel good this morning; or that it is morning to be good on?
@@ -44,23 +20,14 @@ And a very fine morning for a pipe of tobacco out of doors, into the bargain. If
 WordCount: 36
 Then Bilbo sat down on a seat by his door, crossed his legs, and blew out a beautiful grey ring of smoke that sailed up into the air without breaking and floated away over The Hill.
 
-WordCount: 21
-I am looking for someone to share in an adventure that I am arranging, and it's very difficult to find anyone.
-
 WordCount: 20
 We are plain quiet folk and have no use for adventures. Nasty .disturbing uncomfortable things! Make you late for dinner!
 
-WordCount: 21
-Then he took out his morning letters, and begin to read, pretending to take no more notice of the old man.
+WordCount: 37
+Then he took out his morning letters, and begin to read, pretending to take no more notice of the old man. He had decided that he was not quite his sort, and wanted him to go away.
 
-WordCount: 23
-He had decided that he was not quite his sort, and wanted him to go away. But the old man did not move.
-
-WordCount: 24
-He stood leaning on his stick and gazing at the hobbit without saying anything, till Bilbo got quite uncomfortable and even a little cross.
-
-WordCount: 23
-I do know your name, Mr. Bilbo Baggins. And you do know my name, though you don't remember that I belong to it.
+WordCount: 31
+But the old man did not move. He stood leaning on his stick and gazing at the hobbit without saying anything, till Bilbo got quite uncomfortable and even a little cross.
 
 WordCount: 28
 Gandalf, Gandalf! Good gracious me! Not the wandering wizard that gave Old Took a pair of magic diamond studs that fastened themselves and never came undone till ordered?
@@ -77,17 +44,11 @@ Splendid! They used to go up like great lilies and snapdragons and laburnums of 
 WordCount: 25
 You will notice already that Mr. Baggins was not quite so prosy as he liked to believe, also that he was very fond of flowers.
 
-WordCount: 21
-Not the Gandalf who was responsible for so many quiet lads and lasses going off into the Blue for mad adventures.
-
 WordCount: 29
 I mean, you used to upset things badly in these parts once upon a time. I beg your pardon, but I had no idea you were still in business.
 
 WordCount: 29
 All the same I am pleased to find you remember something about me. You seem to remember my fireworks kindly, at any rate, land that is not without hope.
-
-WordCount: 25
-Yes, you have! Twice now. My pardon. I give it you. In fact I will go so far as to send you on this adventure.
 
 WordCount: 24
 With that the hobbit turned and scuttled inside his round green door, and shut it as quickly as he dared, not to seen rude.
@@ -95,20 +56,11 @@ With that the hobbit turned and scuttled inside his round green door, and shut i
 WordCount: 26
 He had only just had break fast, but he thought a cake or two and a drink of something would do him good after his fright.
 
-WordCount: 25
-He rushed and put on the kettle, and put out another cup and saucer and an extra cake or two, and ran to the door.
-
 WordCount: 32
 A little stiff perhaps, but he meant it kindly. And what would you do, if an uninvited dwarf came and hung his things up in your hall without a word of explanation?
 
 WordCount: 26
 They had not been at table long, in fact they had hardly reached the third cake, when there came another even louder ring at the bell.
-
-WordCount: 22
-Bilbo with a gasp. It was not the correct thing to say, but they have begun to arrive had flustered him badly.
-
-WordCount: 19
-He liked visitors, but he liked to know them before they arrived, and he preferred to ask them himself.
 
 WordCount: 25
 Bilbo plumped down the beer and the cake in front of them, when loud came a ring at the bell again, and then another ring.
@@ -116,26 +68,17 @@ Bilbo plumped down the beer and the cake in front of them, when loud came a ring
 WordCount: 30
 But it was not. It was two more dwarves, both with blue hoods, silver belts, and yellow beards; and each of them carried a bag of tools and a spade.
 
-WordCount: 23
-I don't like the sound of that. I really must sit down for a minute and collect my wits, and have a drink.
-
 WordCount: 35
 The poor little hobbit sat down in the hall and put his head in his hands, and wondered what had happened, and what was going to happen, and whether they would all stay to supper.
 
-WordCount: 25
-Then the bell rang again louder than ever, and he had to run to the door. It was not four after all, t was FIVE.
+WordCount: 37
+Then the bell rang again louder than ever, and he had to run to the door. It was not four after all, t was FIVE. Another dwarf had come along while he was wondering in the hall.
 
 WordCount: 35
 Already it had almost become a throng. Some called for ale, and some for porter, and one for coffee, and all of them for cakes; so the hobbit was kept very busy for a while.
 
-WordCount: 23
-Wednesday he ever remembered. He pulled open the door with a jerk, and they all fell in, one on top of the other.
-
-WordCount: 44
-More dwarves, four more! And there was Gandalf behind, leaning on his staff and laughing. He had made quite a dent on the beautiful door; he had also, by the way, knocked out the secret mark that he had put there the morning before.
-
-WordCount: 40
-This last belonged to Thorin, an enormously important dwarf, in fact no other than the great Thorin Oakenshield himself, who was not at all pleased at falling flat on Bilbo's mat with Bifur, Bofur, and Bombur on top of him.
+WordCount: 27
+Wednesday he ever remembered. He pulled open the door with a jerk, and they all fell in, one on top of the other. More dwarves, four more!
 
 WordCount: 22
 For one thing Bombur was immensely fat and heavy. Thorin indeed was very haughty, and said nothing about service; but poor Mr.
@@ -143,32 +86,14 @@ For one thing Bombur was immensely fat and heavy. Thorin indeed was very haughty
 WordCount: 24
 Mr. Baggins, who was feeling positively flummoxed, and was beginning to wonder whether a most wretched adventure had not come right into his house.
 
-WordCount: 40
-By the time he had got all the bottles and dishes and knives and forks and glasses and plates and spoons and things piled up on big trays, he was getting very hot, and red in the face, and annoyed.
-
-WordCount: 45
-Lo and behold! there stood Balin and Dwalin at the door of the kitchen, and Fili and Kili behind them, and before he could say knife they had whisked the trays and a couple of small tables into the parlour and set out everything afresh.
-
 WordCount: 31
 The dwarves ate and ate, and talked and talked, and time got on. At last they pushed their chairs back, and Bilbo made a move to collect the plates and glasses.
 
-WordCount: 21
-And after. We shan't get through the business till late, and we must have some music first. Now to clear up!
-
-WordCount: 22
-Smash the bottles and burn the corks! Cut the cloth and tread on the fat! Pour the milk on the pantry floor!
+WordCount: 29
+Smash the bottles and burn the corks! Cut the cloth and tread on the fat! Pour the milk on the pantry floor! Leave the bones on the bedroom mat!
 
 WordCount: 36
 Splash the wine on every door! Dump the crocks in a boiling bawl; Pound them up with a thumping pole; And when you've finished, if any are whole, Send them down the hall to roll !
-
-WordCount: 54
-That's what Bilbo Baggins hates! So, carefully! carefully with the plates! And of course they did none of these dreadful things, and everything was cleaned and put away safe as quick as lightning, while the hobbit was turning round and round in the middle of the kitchen trying to see what they were doing.
-
-WordCount: 22
-He had quite a cloud of them about him already, and in the dim light it made him look strange and sorcerous.
-
-WordCount: 21
-The dark filled all the room, and the fire died down, and the shadows were lost, and still they played on.
 
 WordCount: 25
 Far over the misty mountains cold To dungeons deep and caverns old We must away ere break of day To seek the pale enchanted gold.
@@ -194,9 +119,6 @@ As they sang the hobbit felt the love of beautiful things made by hands and by c
 WordCount: 29
 He looked out of the window. The stars were out in a dark sky above the trees. He thought of the jewels of the dwarves shining in dark caverns.
 
-WordCount: 49
-Hill, again. He got up trembling. He had less than half a mind to fetch the lamp, and more than half a mind to pretend to, and go and hide behind the beer barrels in the cellar, and not come out again until all the dwarves had gone away.
-
 WordCount: 24
 Suddenly he found that the music and the singing had stopped, and they were all looking at him with eyes shining in the dark.
 
@@ -206,17 +128,8 @@ Bilbo, and sat down in a hurry. He missed the stool and sat in the fender, knock
 WordCount: 28
 Bilbo Baggins, who was wagging his mouth in protest at being called audacious and worst of all fellow conspirator, though no noise came out, he was so flummoxed.
 
-WordCount: 39
-This was Thorin's style. He was an important dwarf. If he had been allowed, he would probably have gone on like this until he was out of breath, without telling any one there 'anything that was not known already.
-
-WordCount: 42
-But he was rudely interrupted. Poor Bilbo couldn't bear it any longer. At may never return he began to feel a shriek coming up inside, and very soon it burst out like the whistle of an engine coming out of a tunnel.
-
 WordCount: 32
 It sailed a hundred yards through the air and went down a rabbit hole, and in this way the battle was won and the game of Golf invented at the same moment.
-
-WordCount: 47
-Will he do, do you think? It is all very well for Gandalf to talk about this hobbit being fierce, but one shriek like that in a moment of excitement would be enough to wake the dragon and all his relatives, and kill the lot of us.
 
 WordCount: 34
 I think it sounded more like fright than excitement! In fact, if it bad not been for the sign on the door, I should have been sure we had come to the wrong house.
@@ -230,26 +143,11 @@ I put it there myself. For very good reasons. You asked me to find the fourteent
 WordCount: 35
 Baggins. Just let any one say I chose the wrong man or the wrong house, and you can stop at thirteen and have all the bad luck you like, or go back to digging coal.
 
-WordCount: 47
-He scowled so angrily at Gloin that the dwarf huddled back in his chair; and when Bilbo tried to open his mouth to ask a question, he turned and frowned at him and stuck oat his bushy eyebrows, till Bilbo shut his mouth tight with a snap.
-
 WordCount: 39
 If I say he is a Burglar, a Burglar he is, or will be when the time comes. There is a lot more in him than you guess, and a deal more than he has any idea of himself.
 
-WordCount: 24
-On the table in the light of a big lamp with a red shad he spread a piece of parchment rather like a map.
-
-WordCount: 17
-This was made by Thror, your grandfather, Thorin, he said in answer to the dwarves' excited questions.
-
 WordCount: 26
 I remember the Mountain well enough and the lands about it. And I know where Mirkwood is, and the Withered Heath where the great dragons bred.
-
-WordCount: 49
-Because it is too small. 'Five feet high the door and three may walk abreast' say the runes, but Smaug could not creep into a hole that size, not even when he was a young dragon, certainly not after devouring so many of the dwarves and men of Dale.
-
-WordCount: 43
-He was getting excited and interested again, so that he forgot to keep his mouth shut. He loved maps, and in his hall there hung a large one of the Country Round with all his favourite walks marked on it in red ink.
 
 WordCount: 29
 So far we have had no clear idea what to do. We thought of going East, as quiet and careful as we could, as far as the Long Lake.
@@ -260,14 +158,8 @@ Warrior, even a Hero. I tried to find one; but warriors are busy fighting one an
 WordCount: 23
 And here is our little Bilbo Baggins, the burglar, the chosen and selected burglar. So now let's get on and make some plans.
 
-WordCount: 26
-I mean about the gold and the dragon, and all that, and how it got there, and who it belongs to, and so on and further.
-
 WordCount: 32
 Long ago in my grandfather Thror's time our family was driven out of the far North, and came back with all their wealth and their tools to this Mountain on the map.
-
-WordCount: 62
-I believe they found a good deal of gold and a great many jewels too. Anyway they grew immensely rich and famous, and my grandfather was King under the Mountain again and treated with great reverence by the mortal men, who lived to the South, and were gradually spreading up the Running River as far as the valley overshadowed by the Mountain.
 
 WordCount: 26
 They built the merry town of Dale there in those days. Kings used to send for our smiths, and reward even the least skilful most richly.
@@ -275,26 +167,134 @@ They built the merry town of Dale there in those days. Kings used to send for ou
 WordCount: 28
 Altogether those were good days for us, and the poorest of us had money to spend and to lend, and leisure to make beautiful things just for the.
 
-WordCount: 42
-Indeed they hardly know a good bit of work from a bad, though they usually have a good notion of the current market value; and they can't make a thing for themselves, not even mend a little loose scale of their armour.
-
-WordCount: 42
-There were lots of dragons in the North in those days, and gold was probably getting scarce up there, with the dwarves flying south or getting killed, and all the general waste and destruction that dragons make going from bad to worse.
-
-WordCount: 23
-There was a most specially greedy, strong and wicked worm called Smaug. One day he flew up into the air and came south.
-
 WordCount: 31
 By that time all the bells were ringing in Dale and the warriors were arming. The dwarves rushed out of their great gate; but there was the dragon waiting for them.
 
 WordCount: 26
 Then he went back and crept in through the Front Gate and routed out all the halls, and lanes, and tunnels, alleys, cellars, mansions and passages.
 
-WordCount: 43
-After that there were no dwarves left alive inside, and he took all their wealth for himself. Probably, for that is the dragons' way, he has piled it all up in a great heap far inside, and sleeps on it for a bed.
-
 WordCount: 35
 Later he used to crawl out of the great gate and come by night to Dale, and carry away people, especially maidens, to eat, until Dale was ruined, and all the people dead or gone.
 
 WordCount: 31
 The few of us that were well outside sat and wept in hiding, and cursed Smaug; and there we were unexpectedly joined by my father and my grandfather with singed beards.
+
+WordCount: 36
+They looked very grim but they said very little. When I asked how they had got away, they told me to hold my tongue, and said that one day in the proper time I should know.
+
+WordCount: 30
+But apparently they made a map, and I should like to know how Gandalf got hold of it, and why it did not come down to me, the rightful heir.
+
+WordCount: 38
+I had to find you. Your father could not remember his own name when he gave me the paper, and he never told me yours; so on the whole I think I ought to be praised and thanked.
+
+WordCount: 35
+Moria. Your father went away to try his luck with the map after your grandfather was killed; and lots of adventures of a most unpleasant sort he had, but he never got near the Mountain.
+
+WordCount: 23
+Never you mind. I was finding things out, as usual; and a nasty dangerous business it was. Even I, Gandalf, only just escaped.
+
+WordCount: 27
+I tried to save your father, but it was too late. He was witless and wandering, and had forgotten almost everything except the map and the key.
+
+WordCount: 31
+Don't be absurd! He is an enemy quite beyond the powers of all the dwarves put together, if they could all be collected again from the four corners of the world.
+
+WordCount: 31
+The one thing your father wished was for his son to read the map and use the key. The dragon and the Mountain are more than big enough tasks for you!
+
+WordCount: 24
+One thing he did make his mind up about was not to bother to get up very early and cook everybody else's wretched breakfast.
+
+WordCount: 28
+Bilbo went to sleep with that in his ears, and it gave him very uncomfortable dreams. It was long after the break of day, when he woke up.
+
+WordCount: 30
+There he saw nobody, but all the signs of a large and hurried breakfast. There was a fearful mess in the room, and piles of unwashed crocks in the kitchen.
+
+WordCount: 31
+By that time the sun was shining; and the front door was open, letting in a warm spring breeze. Bilbo began to whistle loudly and to forget about the night before.
+
+WordCount: 23
+Thorin and Company to Burglar Bilbo greeting! For your hospitality our sincerest thanks, and for your offer of professional assistance our grateful acceptance.
+
+WordCount: 32
+Gandalf's hands, and running as fast as his furry feet could carry him down the lane, past the great Mill, across The Water, and then on for a whole mile or more.
+
+WordCount: 27
+Balin who was standing at the inn door looking out for him. Just then all the others came round the corner of the road from the village.
+
+WordCount: 28
+They were on ponies, and each pony was slung about with all kinds of baggages, packages, parcels, and paraphernalia. There was a very small pony, apparently for Bilbo.
+
+WordCount: 24
+Dwalin. They were too large for him, and he looked rather comic. What his father Bungo would have thought of him, I daren't think.
+
+WordCount: 33
+His only comfort was he couldn't be mistaken for a dwarf, as he had no beard. They had not been riding very long when up came Gandalf very splendid on a white horse.
+
+WordCount: 26
+These didn't come quite as often as Bilbo would have liked them, but still he began to feel that adventures were not so bad after all.
+
+WordCount: 33
+Not far ahead were dreary hills, rising higher and higher, dark with trees. On some of them were old castles with an evil look, as if they had been built by wicked people.
+
+WordCount: 34
+Everything seemed gloomy, for the weather that day had taken a nasty turn. Mostly it had been as good as May can be, even in merry tales, but now it was cold and wet.
+
+WordCount: 28
+Bother burgling and everything to do with it! I wish I was at home in my nice hole by the fire, with the kettle just beginning to sing!
+
+WordCount: 25
+It was not the last time that he wished that! Still the dwarves jogged on, never turning round or taking any notice of the hobbit.
+
+WordCount: 32
+I don't know what river it was, a rushing red one, swollen with the rains of the last few days, that came down from the hills and mountains in front of them.
+
+WordCount: 24
+Soon it was nearly dark. The winds broke up the grey clouds, and a waning moon appeared above the hills between the flying rags.
+
+WordCount: 36
+Not until then did they notice that Gandalf was missing. So far he had come all the way with them, never saying if he was in the adventure or merely keeping them company for a while.
+
+WordCount: 29
+They moved to a clump of trees, and though it was drier under them, the wind shook the rain off the leaves, and the drip, drip, was most annoying.
+
+WordCount: 23
+Some said they could but go and see, and anything was better than little supper, less breakfast, and wet clothes all the night.
+
+WordCount: 28
+They have seldom even heard of the king round here, and the less inquisitive you are as you go along, the less trouble you are likely to find.
+
+WordCount: 23
+This remark was repeated by everybody. Then the rain began to pour down worse than ever, and Oin and Gloin began to fight.
+
+WordCount: 28
+Off Bilbo had to go, before he could explain that he could not hoot even once like any kind of owl any more than fly like a bat.
+
+WordCount: 22
+They were toasting mutton on long spits of wood, and licking the gravy off their fingers. There was a fine toothsome smell.
+
+WordCount: 23
+Also there was a barrel of good drink at hand, and they were drinking out of jugs. But they were trolls. Obviously trolls.
+
+WordCount: 33
+Yer can't expect folk to stop here for ever just to be et by you and Bert. You've et a village and a half between yer, since we come down from the mountains.
+
+WordCount: 35
+He took a big bite off a sheep's leg he was toasting, and wiped his lips on his sleeve. Yes, I am afraid trolls do behave like that, even those with only one head each.
+
+WordCount: 22
+Others more practical but with less professional pride would perhaps have stuck a dagger into each of them before they observed it.
+
+WordCount: 25
+Then the night could have been spent cheerily. Bilbo knew it. He had read of a good many things he had never seen or done.
+
+WordCount: 27
+Bert and Tom went off to the barrel. William was having another drink. Then Bilbo plucked up courage and put his little hand in William's enormous pocket.
+
+WordCount: 27
+I cook, if you see what I mean. I'll cook beautifully for you, a perfectly beautiful breakfast for you, if only you won't have me for supper.
+
+WordCount: 26
+Bilbo to come back, or to hoot like an owl, they started off one by one to creep towards the light as quietly as they could.
