@@ -1,11 +1,18 @@
 #include "engine.h"
 
-/* Beolvas egy szoveget a billentyuzetrol.
- * A rajzolashoz hasznalt font es a megjelenito az utolso parameterek.
- * Az elso a tomb, ahova a beolvasott szoveg kerul.
- * A masodik a maximÃ¡lis hossz, ami beolvashatÃ³.
- * A visszateresi erteke logikai igaz, ha sikerult a beolvasas.
- * MEGJ: ez a fuggveny infoC-rol lett kimasolva, ez megengedett a hazi feladat soran*/
+/*
+Beolvas egy szoveget a billentyuzetrol.
+char *dest: ide írja a beolvasott szöveget, UTF-8 karakterkódolással
+size_t hossz: maximum ennyi bájt hosszú szöveget olvas be.
+SDL_Rect teglalap: a szövegbeviteli mezõ helyét és méretét megadó téglalap.
+SDL_Color hatter: a mezõ színe.
+SDL_Color szoveg: a szöveg színe.
+TTF_Font *font: a betûtípus, amellyel rajzol.
+SDL_Renderer *renderer: az ablak.
+Visszatérés: azt mondja meg, sikeres volt-e a beolvasás
+Megj.:: ez a fuggveny infoC-rol lett kimasolva, ez megengedett a hazi feladat soran:
+https://infoc.eet.bme.hu/sdl/#7
+ */
 bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, SDL_Color szoveg, TTF_Font *font, SDL_Renderer *renderer, bool* escape) {
     /* Ez tartalmazza az aktualis szerkesztest */
     char composition[SDL_TEXTEDITINGEVENT_TEXT_SIZE];
@@ -45,7 +52,7 @@ bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, S
         if (w < maxw) {
             vlineRGBA(renderer, teglalap.x + w + 2, teglalap.y + 2, teglalap.y + teglalap.h - 3, szoveg.r, szoveg.g, szoveg.b, 192);
         }
-        /* megjeleniti a kÃ©pernyon az eddig rajzoltakat */
+        /* megjeleniti a képernyon az eddig rajzoltakat */
         SDL_RenderPresent(renderer);
 
         SDL_Event event;
@@ -114,7 +121,10 @@ bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, S
     return enter;
 }
 
-//az 'input_text'-nek megfelelÅ‘en kezeli a visszatÃ¶rlÃ©st
+/*
+A backspace-es visszatörlést kezeli
+char* input: a string, amibõl törlünk egy karaktert
+*/
 void handle_backspace(char* input) {
     int textlen = strlen(input);
     do {
@@ -140,9 +150,14 @@ void handle_backspace(char* input) {
 
 }
 
-/*Amennyiben helyesen van begÃ©pelve a szÅ‘, tovÃ¡bblÃ©pteti a jÃ¡tÃ©kot a kÃ¶vetkezÅ‘
-szÃ³ra*/
-void handle_space(char* input, char* target, char* composition, SDL_Event event) {
+/*
+Amennyiben helyesen van begépelve a szó, továbblépteti a játékot a következõ
+szóra space lenyomására
+char* input: a játékos által begépelt szó (a beviteli doboz állása)
+char* target: a játékos által begépelendõ szó
+SDL_Event event: az event, ami miatt meghívtuk a függvényt
+*/
+void handle_space(char* input, char* target, SDL_Event event) {
     if (event.key.keysym.sym == SDLK_SPACE) {
         if (strcmp(input, target)==0) {
             SDL_StopTextInput();
@@ -153,8 +168,12 @@ void handle_space(char* input, char* target, char* composition, SDL_Event event)
     }
 }
 
-
-/*A gÃ©pelÃ©st kezeli, amennyiben az nem szÃ³ lÃ©ptetÅ‘ space*/
+/*
+A gépelést kezeli
+char* input: a játékos által begépelt szó / a bemeneti doboz állása
+char* composition: az aktuális szerkesztést tartalmazza
+SDL_Event event: az event, ami miatt meghívtuk a függvényt
+*/
 void handle_textinput(char* input, char* composition, SDL_Event event) {
     /* A feldolgozott szoveg bemenete */
     if (strlen(input) + strlen(event.text.text) < HOSSZ) {
@@ -164,18 +183,28 @@ void handle_textinput(char* input, char* composition, SDL_Event event) {
     composition[0] = '\0';
 }
 
-//TODO: COMMENT EVERYTHING UNDER HIS LINE ------------------------------------------------------------
+/*
+Véletlenszerû színt és egy +-5 határon belül vélelten wpm-et ad a botoknak
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+*/
 void randomize_bots(GameData* game_data) {
     for (int i=0; i<BOT_NUM; i++) {
         game_data->bots[i].ms = (int)(60000/(game_data->bots[i].expected_wpm+(rand()%10)-5));
+        if (game_data->bots[i].ms < 5) {
+            game_data->bots[i].ms = 5;
+        }
         SDL_Color color = {rand()%255, rand()%255, rand()%255};
         game_data->bots[i].car.color1 = color;
         game_data->bots[i].car.x = game_data->margo;
         game_data->bots[i].active = true;
-        printf("randomize output: %s ms: %d\n", game_data->bots[i].car.name, game_data->bots[i].ms);
     }
 }
 
+/*
+Inicializálja a botokat, hogy a késõbbi használatkor már csak
+randomizálni kelljen öket
+Bot bots[]: a botok tömbje (hossza makróként van megadva:BOT_NUM)
+*/
 void init_bots(Bot bots[]) {
     for (int i=0; i<BOT_NUM; i++) {
         Car car = {0, 0, 0, 0, {255, 255, 255}, {0, 0, 0}, ""};
@@ -188,14 +217,26 @@ void init_bots(Bot bots[]) {
     }
 }
 
+/*
+Megadja, egy négyszögön belül esik-e egy (x,y) pont
+SDL_Rect rect: a négyszög amin belül eshet a pont
+int x, y: a pont koordinátái
+Visszatérés: bool, benne van-e a pont
+*/
 bool in_rect(SDL_Rect rect, int x, int y) {
     bool X = (x >= rect.x) && (x <= rect.x + rect.w);
     bool Y = (y >= rect.y) && (y <= rect.y + rect.h);
     return X && Y;
 }
 
+/*
+az alábbi függvények mind a következõt teszik:
+-megváltoztatják a játéknézetet
+-kiraknak egy eventet, ami jelzi ennek a tényét
+paraméterük:
+
+*/
 void go_to_single_game(GameData* game_data) {
-    printf("Clicked SINGLE_GAME\n");
     game_data->game_view = SingleGame;
     SDL_Event event;
     event.type = GAME_VIEW_CHANGED_EVENT;
@@ -203,7 +244,6 @@ void go_to_single_game(GameData* game_data) {
 }
 
 void go_to_bot_game(GameData* game_data) {
-    printf("Clicked BOT_GAME\n");
     game_data->game_view = BotGame;
     SDL_Event event;
     event.type = GAME_VIEW_CHANGED_EVENT;
@@ -211,7 +251,6 @@ void go_to_bot_game(GameData* game_data) {
 }
 
 void go_to_multi_game(GameData* game_data) {
-    printf("Clicked BOT_GAME\n");
     game_data->game_view = MultiGame;
     SDL_Event event;
     event.type = GAME_VIEW_CHANGED_EVENT;
@@ -219,7 +258,6 @@ void go_to_multi_game(GameData* game_data) {
 }
 
 void go_to_menu(GameData* game_data) {
-    printf("Clicked MENU\n");
     game_data->game_view = MainMenu;
     SDL_Event event;
     event.type = GAME_VIEW_CHANGED_EVENT;
@@ -227,7 +265,6 @@ void go_to_menu(GameData* game_data) {
 }
 
 void get_name(GameData* game_data) {
-    printf("Clicked ASKNAME\n");
     game_data->game_view = AskName;
     SDL_Event event;
     event.type = GAME_VIEW_CHANGED_EVENT;
@@ -260,27 +297,26 @@ void bot4_up(GameData* game_data) {
 }
 
 void bot1_down(GameData* game_data) {
-    if (game_data->bots[0].expected_wpm > 20)
+    if (game_data->bots[0].expected_wpm > 10)
         game_data->bots[0].expected_wpm -= 5;
 }
 
 void bot2_down(GameData* game_data) {
-    if (game_data->bots[1].expected_wpm > 20)
+    if (game_data->bots[1].expected_wpm > 10)
         game_data->bots[1].expected_wpm -= 5;
 }
 
 void bot3_down(GameData* game_data) {
-    if (game_data->bots[2].expected_wpm > 20)
+    if (game_data->bots[2].expected_wpm > 10)
         game_data->bots[2].expected_wpm -= 5;
 }
 
 void bot4_down(GameData* game_data) {
-    if (game_data->bots[3].expected_wpm > 20)
+    if (game_data->bots[3].expected_wpm > 10)
         game_data->bots[3].expected_wpm -= 5;
 }
 
 void go_to_settings(GameData* game_data) {
-    printf("Clicked SETTINGS\n");
     game_data->game_view = Settings;
     SDL_Event event;
     event.type = GAME_VIEW_CHANGED_EVENT;
@@ -311,26 +347,26 @@ void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, i
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
     TTF_Font* underlined = game_data->underlined;
-    /*A felhasznÃ¡lt szÃ­nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color zold = {0, 255, 0};
     SDL_Color vilagos_kek = {120, 150, 255};
     SDL_Color vilagos_piros = {255, 114, 118};
-    //a statisztikÃ¡hoz hasznÃ¡lt vÃ¡ltozÃ³k:
+    //a statisztikához használt változók:
     bool* correct = (bool*) malloc(sizeof(bool)*text.word_count);
     double* times = (double*) malloc(sizeof(double)*text.word_count);
     for (int i=0; i<text.word_count; i++) {
         correct[i] = true;
         times[i] = 0.0;
     }
-    //ahova a szÃ¶veg Ã­rÃ³dik majd:
+    //ahova a szöveg íródik majd:
     SDL_Rect input_box = {game_data->margo, input_top, game_data->szeles-2*game_data->margo, game_data->margo};
     Button menu_button = {{game_data->szeles-btn_W-2*game_data->margo, btn_top, btn_W, btn_H}, feher, fekete, "Menu", go_to_menu};
     Button settings_button = {{2*game_data->margo, btn_top, btn_W, btn_H}, feher, fekete, "Settings", go_to_settings};
-    const int num_buttons = 2; //csak 2 gomb: menÃ¼be lÃ©pÃ©s, Ã©s beÃ¡llÃ­tÃ¡sokba lÃ©pÃ©s
+    const int num_buttons = 2; //csak 2 gomb: menübe lépés, és beállításokba lépés
     Button buttons[2] = {menu_button, settings_button};
-    //az Ã­rogatÃ¡shoz hasznÃ¡lt segÃ©dvÃ¡ltozÃ³k
+    //az írogatáshoz használt segédváltozók
     char input[HOSSZ] = "";
     char composition[SDL_TEXTEDITINGEVENT_TEXT_SIZE] = "";
     char textandcomposition[HOSSZ + SDL_TEXTEDITINGEVENT_TEXT_SIZE + 1] = "";
@@ -387,7 +423,7 @@ void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, i
                         draw = true;
                      }
                      if (event.key.keysym.sym == SDLK_SPACE) {
-                        handle_space(input, target, composition, event);
+                        handle_space(input, target, event);
                         draw = true;
                      }
                  }
@@ -467,13 +503,13 @@ void run_single_game(GameData* game_data) {
     Text text = textarray->texts[rand()%textarray->text_count];
     TTF_Font* font = game_data->font;
     game_data->players = 1;
-    //a felhasznÃ¡lt timer-ek:
+    //a felhasznált timer-ek:
     SDL_EventType tick_sec = TICK_SEC;
     SDL_TimerID sec_tick = SDL_AddTimer(1000, idozit, &tick_sec);
-    const int N = game_data->players; //ennyi kocsi lesz a kÃ©pernyÅ‘n, ettÅ‘l fÃ¼ggÅ‘en kell elrendezni a UI-t
+    const int N = game_data->players; //ennyi kocsi lesz a képernyõn, ettõl függõen kell elrendezni a UI-t
     const int btn_H = 80;
     const int btn_W = 150;
-    //UI elrendezÃ©s_
+    //UI elrendezés_
     int btn_top = game_data->magas - btn_H - (int)((5.0/4.0 - 1.0/4.0*(double)N)*game_data->margo);
     int input_top = btn_top - (int)((-0.125*N + 2.125)*game_data->margo);
     SDL_Rect countdown_box = {game_data->szeles/2-1.6*btn_H, input_top-btn_H, 3.2*btn_H, 0.8*btn_H};
@@ -508,14 +544,14 @@ void run_bot_game(GameData* game_data) {
     TTF_Font* font = game_data->font;
     game_data->players = 5;
     randomize_bots(game_data);
-    //a felhasznÃ¡lt timer-ek:
+    //a felhasznált timer-ek:
     SDL_EventType tick_sec = TICK_SEC;
     SDL_TimerID sec_tick = SDL_AddTimer(1000, idozit, &tick_sec);
     SDL_TimerID timer_ids[BOT_NUM];
-    const int N = game_data->players; //ennyi kocsi lesz a kÃ©pernyÅ‘n, ettÅ‘l fÃ¼ggÅ‘en kell elrendezni a UI-t
+    const int N = game_data->players; //ennyi kocsi lesz a képernyõn, ettõl függõen kell elrendezni a UI-t
     const int btn_H = 80;
     const int btn_W = 150;
-    //UI elrendezÃ©s_
+    //UI elrendezés_
     int btn_top = game_data->magas - btn_H - (int)((5.0/4.0 - 1.0/4.0*(double)N)*game_data->margo);
     int input_top = btn_top - (int)((-0.125*N + 2.125)*game_data->margo);
     SDL_Rect countdown_box = {game_data->szeles/2-1.6*btn_H, input_top-btn_H, 3.2*btn_H, 0.8*btn_H};
@@ -580,7 +616,7 @@ void run_multi_game(GameData* game_data) {
     TTF_Font* font = game_data->font;
     TextArray* textarray = game_data->p_textarray;
     Text text = textarray->texts[rand()%textarray->text_count];
-    /*A felhasznÃ¡lt szÃ­nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
@@ -619,10 +655,10 @@ void run_multi_game(GameData* game_data) {
     } while (game_data->players < 5);
     SDL_EventType tick_sec = TICK_SEC;
     SDL_TimerID sec_tick = SDL_AddTimer(1000, idozit, &tick_sec);
-    const int N = game_data->players; //ennyi nem-player lesz a kÃ©pernyÅ‘n, ettÅ‘l fÃ¼ggÅ‘en kell elrendezni a UI-t
+    const int N = game_data->players; //ennyi nem-player lesz a képernyõn, ettõl függõen kell elrendezni a UI-t
     const int btn_H = 80;
     const int btn_W = 150;
-    //UI elrendezÃ©s_
+    //UI elrendezés_
     int btn_top = game_data->magas - btn_H - (int)((5.0/4.0 - 1.0/4.0*(double)N)*game_data->margo);
     int input_top = btn_top - (int)((-0.125*N + 2.125)*game_data->margo);
     SDL_Rect countdown_box = {game_data->szeles/2-1.6*btn_H, input_top-btn_H, 3.2*btn_H, 0.8*btn_H};
@@ -677,7 +713,7 @@ void run_multi_game(GameData* game_data) {
     if (game_data->game_view == MultiGame) {
         qsort(game_data->multis, game_data->players, sizeof(Bot), compare_wpm);
         for (int i=0; i<game_data->players; i++) {
-            printf("%d.: %s, wpm: %.2f\n", i+1, game_data->multis[i].car.name, game_data->multis[i].expected_wpm);
+            //printf("%d.: %s, wpm: %.2f\n", i+1, game_data->multis[i].car.name, game_data->multis[i].expected_wpm);
             game_data->game_view = MultiStatistics;
             SDL_Event event;
             event.type = GAME_VIEW_CHANGED_EVENT;
@@ -695,7 +731,7 @@ void main_menu(GameData* game_data) {
     int W = 500;
     int H = 100;
     const int num_buttons = 4;
-    /*A felhasznÃ¡lt szÃ­nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
@@ -741,7 +777,7 @@ void main_menu(GameData* game_data) {
 void settings(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font =  game_data->font;
-    /*A felhasznÃ¡lt szÃ­nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
@@ -797,14 +833,14 @@ void multi_statistics(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
     Stats stats = game_data->stats;
-    /*A felhasznÃ¡lt szÃ­nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
     clear_screen(game_data, vilagos_kek);
     char display_str[2*HOSSZ];
     for (int i=0; i<game_data->players; i++) {
-        sprintf(display_str, "%d.: %s, WPM: %.2f. ", i, game_data->multis[i].car.name, game_data->multis[i].expected_wpm);
+        sprintf(display_str, "%d.: %s, WPM: %.2f. ", i+1, game_data->multis[i].car.name, game_data->multis[i].expected_wpm);
         if (top10(game_data->leaderboard, game_data->multis[i].expected_wpm)) {
             strcat(display_str, "Earned a Leaderboard spot!");
             LeaderboardEntry entry;
@@ -849,7 +885,7 @@ void statistics(GameData* game_data) {
     TTF_Font* font = game_data->font;
     Stats stats = game_data->stats;
     LeaderBoard leaderboard = game_data->leaderboard;
-    /*A felhasznÃ¡lt szÃ­nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
@@ -862,9 +898,14 @@ void statistics(GameData* game_data) {
         settings_button.func = get_name;
         strcat(display_str, " Eligible for Leaderboard!");
     }
+    clear_screen(game_data, vilagos_kek);
     Button buttons[2] = {menu_button, settings_button};
+    render_string_blended(display_str, fekete, font, game_data->szeles/2, settings_button.rect.y - game_data->margo, renderer, Middle);
+    for (int i=0; i<2; i++) {
+        render_button(buttons[i], renderer, font);
+    }
+    SDL_RenderPresent(renderer);
     bool quit = false;
-    bool draw = true;
     SDL_Event event;
     while (!quit && game_data->game_view == Statistics && SDL_WaitEvent(&event)) {
         switch (event.type) {
@@ -873,7 +914,6 @@ void statistics(GameData* game_data) {
                     for (int i=0; i<2; i++) {
                         if (in_rect(buttons[i].rect, event.button.x, event.button.y)) {
                             buttons[i].func(game_data);
-                            draw = true;
                             break;
                         }
                     }
@@ -884,22 +924,13 @@ void statistics(GameData* game_data) {
                 quit = true;
                 break;
         }
-        if (draw) {
-            clear_screen(game_data, vilagos_kek);
-            render_string_blended(display_str, fekete, font, game_data->szeles/2, settings_button.rect.y - game_data->margo, renderer, Middle);
-            for (int i=0; i<2; i++) {
-                render_button(buttons[i], renderer, font);
-            }
-            SDL_RenderPresent(renderer);
-            draw = false;
-        }
     }
 }
 
 void ask_name(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
-    /*A felhasznÃ¡lt szÃ­nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};

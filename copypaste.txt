@@ -1,0 +1,8 @@
+SDL_Rect* word_rects
+Text text: a szöveget tartalmazó struktúra
+TTF_Font* font: a betűtípus
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+SDL_Renderer* renderer: a használt renderer
+SDL_Rect* word_rects: a szavak elrendezését és méretét tartalmazó tömb
+char* input: a játékos által begépelt szó / a bemeneti doboz állása
+char* target: a játékos által begépelendő szó

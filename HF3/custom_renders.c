@@ -1,12 +1,28 @@
 #include "custom_renders.h"
 
-/*az s1 stringbe belemásolja az s2 stringet úgy, hogy konkatenál egy space-t*/
+/*
+az s1 stringbe belemásolja az s2 stringet úgy, hogy konkatenál egy space-t
+feltételezi, hogy elég hosszú s1, hogy elférjen benne az extra karakter
+char* s1: a string, amiben az eredmény lesz
+char*s2: a kiinduló string
+Visszatérés: a módosított string pointere
+*/
+
 char* add_space(char* s1, char* s2) {
     strcpy(s1, s2);
     return strcat(s1, " ");
 }
 
-/*megadja, két string közül az elsõ hány karater egyezik meg*/
+/*
+megadja, két string közül az elsõ hány karater egyezik meg
+char* target: a szó, amihez hasonlítunk
+char* input: a szó, AMIT hasonlítunk
+Visszatérés: az első egyező karakterek száma
+Például:
+target="ABCDEFGH"
+input="ABC"
+output: 3
+*/
 int match_len(char* target, char* input) {
     int l=0;
     while (target[l] != '\0' && input[l] != '\0') {
@@ -19,12 +35,31 @@ int match_len(char* target, char* input) {
     return l;
 }
 
+/*
+megadja, input megfelel-e target első karaktereine
+char* target: a szó, amihez hasonlítunk
+char* input: a szó, AMIT hasonlítunk
+Visszatérés: "helyes"-e a gépelés
+Például:
+target="ABCDEFGH"
+input="ABC"
+output: true
+*/
 bool input_correct(char* target, char* input) {
     int input_len = strlen(input);
     return match_len(target, input) == input_len;
 }
 
-/*kirajzolja a szövegdobozt, ahova a bemenetet gépeljük, a benne lévõ szöveggel együtt*/
+/*
+kirajzolja a szövegdobozt, ahova a bemenetet gépeljük, a benne lévõ szöveggel együtt
+char* input: a string, ami éppen a bemenet
+SDL_Rect teglalap: a szövegdoboz, ahova gépelünk
+SDL_Color input_color: a szövegdoboz háttérszíne
+TTF_Font* font: a használt betűtípus
+SDL_Renderer* renderer: a használt renderer
+char* composition: szövegbevitelnél használt segéd változó, az aktuális szerkesztést tartalmazza
+char* textandcomposition: szövegbevitelnél használt segéd változó, ez az amit ki fogunk rajzolni
+*/
 void render_input(char *input, SDL_Rect teglalap, SDL_Color input_color, TTF_Font *font, SDL_Renderer *renderer, char* composition, char* textandcomposition) {
     SDL_Color fekete = {0, 0, 0}; //a border color kb. mindig fekete
     /* Max hasznalhato szelesseg */
@@ -54,7 +89,14 @@ void render_input(char *input, SDL_Rect teglalap, SDL_Color input_color, TTF_Fon
     }
 }
 
-/*kirenderel egy stringet háttérszín nélkül egy megadott dobozba*/
+/*
+kirenderel egy stringet háttérszín nélkül egy megadott dobozba
+char* str: a string amit kirajzol
+SDL_Color color: a szín, amivel kirajzolja
+TTF_Font* font: a betűtípus
+SDL_Rect rect: a négyszög, amibe a szöveg kerül
+SDL_Renderer* renderer: a használt renderer
+*/
 void render_string_to_rect_blended(char* str, SDL_Color color, TTF_Font* font, SDL_Rect rect, SDL_Renderer* renderer) {
     SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, str, color);
     SDL_Texture* word_t = SDL_CreateTextureFromSurface(renderer, word_s);
@@ -63,7 +105,15 @@ void render_string_to_rect_blended(char* str, SDL_Color color, TTF_Font* font, S
     SDL_DestroyTexture(word_t);
 }
 
-/*kirenderel egy stringet háttérszínnel egy megadott dobozba*/
+/*
+kirenderel egy stringet háttérszínnel egy megadott dobozba
+char* str: a string amit kirajzol
+SDL_Color color: a szín, amivel kirajzolja
+SDL_Color background: a háttérszín
+TTF_Font* font: a betűtípus
+SDL_Rect rect: a négyszög, amibe a szöveg kerül
+SDL_Renderer* renderer: a használt renderer
+*/
 void render_string_to_rect_shaded(char* str, SDL_Color color, SDL_Color background, TTF_Font* font, SDL_Rect rect, SDL_Renderer* renderer) {
     SDL_Surface* word_s  = TTF_RenderUTF8_Shaded(font, str, color, background);
     SDL_Texture* word_t = SDL_CreateTextureFromSurface(renderer, word_s);
@@ -72,8 +122,17 @@ void render_string_to_rect_shaded(char* str, SDL_Color color, SDL_Color backgrou
     SDL_DestroyTexture(word_t);
 }
 
-/*kirenderel egy sztringet háttérszín nélkül egy adott x, y pozícióra, és
-visszaadja a dobozt, amibe a sztring került*/
+/*
+kirenderel egy sztringet háttérszín nélkül egy adott x, y pozícióra, és
+visszaadja a dobozt, amibe a sztring került
+char* str: a string amit kirajzol
+SDL_Color color: a szín, amivel kirajzolja
+TTF_Font* font: a betűtípus
+int x, y: az x és y pozíciója a szöveg kijelölt pontjának, a képernyő bal felső sarkához képest
+SDL_Renderer* renderer: a használt renderer
+Position position: kijelöli, a szöveg mely pontját adja x, y (pl. bal felső, közepe)
+Visszatérés: a doboz, ami a keletkező felület helyét és kiterjedését megadja
+*/
 SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x, int y, SDL_Renderer* renderer, Position position) {
     SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, str, color);
     SDL_Rect rect;
@@ -102,8 +161,18 @@ SDL_Rect render_string_blended(char* str, SDL_Color color, TTF_Font* font, int x
     return rect;
 }
 
-/*kirenderel egy sztringet háttérszínnel egy adott x, y pozícióra, és
-visszaadja a dobozt, amibe a sztring került*/
+/*
+kirenderel egy sztringet háttérszínnel egy adott x, y pozícióra, és
+visszaadja a dobozt, amibe a sztring került
+char* str: a string amit kirajzol
+SDL_Color color: a szín, amivel kirajzolja
+SDL_Color background: a háttérszín
+TTF_Font* font: a betűtípus
+int x, y: az x és y pozíciója a szöveg kijelölt pontjának, a képernyő bal felső sarkához képest
+SDL_Renderer* renderer: a használt renderer
+Position position: kijelöli, a szöveg mely pontját adja x, y (pl. bal felső, közepe)
+Visszatérés: a doboz, ami a keletkező felület helyét és kiterjedését megadja
+*/
 SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, TTF_Font* font, int x, int y, SDL_Renderer* renderer, Position position) {
     SDL_Surface* word_s  = TTF_RenderUTF8_Shaded(font, str, color, background);
     SDL_Rect rect;
@@ -119,7 +188,16 @@ SDL_Rect render_string_shaded(char* str, SDL_Color color, SDL_Color background, 
     return rect;
 }
 
-/*kiszámolja, a Text objektum melyik szavába esik éppen a kurzor*/
+/*
+kiszámolja, a Text objektum melyik szavába esik éppen a kurzor, és cursor_len-be beleírja,
+azon a szón belül hanyadik karakternél jár a kurzor
+Text text: a szöveget tartalmazó struktúra
+target_index: a sorszáma annak a szónak a szövegben, amit be kell gépelnie a játékosnak
+int input_len: annak a szónak a hossza, ami be van gépelve a beviteli dobozba
+int* cursor_len: a mutatott változóba beleírja a függvény, a szavon belül hanyadik
+karakternél jár a kurzor (megjelenítéshez)
+Visszatérés: az az index, amelyik szóban jár a kurzor text-ben
+*/
 int get_cursor_index(Text text, int target_index, int input_len, int* cursor_len) {
     int target_len = strlen(text.words[target_index]);
     while (input_len > target_len+1 && target_index < text.word_count-1) {
@@ -130,23 +208,29 @@ int get_cursor_index(Text text, int target_index, int input_len, int* cursor_len
     return target_index;
 }
 
-/*kiszámolja, a szöveg szavai mely dobozokba kell, hogy essenek,
-ahhoz, hogy a szöveg beférjen a megadott helyre
-x: a szövegdoboz bal széle
-y: a szövegdoboz teteje
-w: a szövegdoboz szélessége
-a szövegdoboz magassága abból dõl el, hány sorba fog kiférni a szöveg*/
+/*
+kiszámolja, a szöveg szavai mely dobozokba kell, hogy essenek, ahhoz, hogy a szöveg beférjen a
+megadott helyre, és helyet foglal a téglalpok tömbjének
+int x: a szövegdoboz bal széle
+int y: a szövegdoboz teteje
+int w: a szövegdoboz szélessége
+Text text: a szöveget tartalmazó struktúra
+TTF_Font* font: a betűtípus
+Visszatérés: SDL_Rect változók dinamikusan foglalt tömbjére mutató pointer
+a szövegdoboz magassága abból dõl el, hány sorba fog kiférni a szöveg
+Megj.: a foglalt területet fel kell szabadítani*/
 SDL_Rect* calculate_Rects(Text text, TTF_Font* font, int x, int y, int w) {
     SDL_Color color = {0, 0, 0};
     int word_count = text.word_count;
     SDL_Rect* word_rects = (SDL_Rect*) malloc(word_count*sizeof(SDL_Rect));
-    int right_edge = x+w;
-    int left_edge = x;
+    int right_edge = x+w; //ennél jobbrább nem végződhet egy szó sem
+    int left_edge = x; //ide ugrunk vissza ha túl jobbra mennénk
     for (int i=0; i<word_count; i++) {
         char word[HOSSZ];
         SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, add_space(word, text.words[i]), color);
         word_rects[i].w = word_s->w;
         word_rects[i].h = word_s->h;
+        //ha túlságosan jobbra lenne a szöveg vége, akkor lentebb ugrunk, és visszamegyünk bal szélre
         if (x+word_s->w > right_edge) {
             y += word_s -> h;
             x = left_edge;
@@ -159,12 +243,23 @@ SDL_Rect* calculate_Rects(Text text, TTF_Font* font, int x, int y, int w) {
     return word_rects;
 }
 
-/*Letörli a táblát :) */
+/*
+Letörli a táblát, megadott színnel
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+SDL_Color color: a háttérszíne a játéknak
+*/
 void clear_screen(GameData* game_data, SDL_Color color) {
     boxRGBA(game_data->renderer, 0, 0, game_data->szeles, game_data->magas, color.r, color.g, color.b, 255);
 }
 
-/*A kurzor index és a kurzor szavon belüli pozíciója alapján rendereli a kurzort (egy elnyújtott téglalap)*/
+/*
+A kurzor index és a kurzor szavon belüli pozíciója alapján rendereli a kurzort (egy elnyújtott téglalap)
+Text text: a szöveget tartalmazó struktúra
+SDL_Rect* word_rects: a szavak elrendezését és méretét tartalmazó tömb
+int cursor_index: a sorszáma a szónak, amiben a kurzor áll
+int cursor_len: a kurzor helye a szavon belül
+SDL_Renderer* renderer: a használt renderer
+*/
 void render_cursor(Text text, SDL_Rect* word_rects, TTF_Font* font, int cursor_index, int cusor_len, SDL_Renderer* renderer) {
     SDL_Color fekete = {0, 0, 0};
     SDL_Rect rect = word_rects[cursor_index];
@@ -172,7 +267,6 @@ void render_cursor(Text text, SDL_Rect* word_rects, TTF_Font* font, int cursor_i
     char *word = text.words[cursor_index];
     int x1, x2, y1, y2;
     if (cusor_len) {
-        /*beírjuk display_str-be a szót, és */
         add_space(display_str, word);
         display_str[cusor_len] = '\0';
         SDL_Surface* word_s = TTF_RenderUTF8_Blended(font, display_str, fekete);
@@ -186,17 +280,19 @@ void render_cursor(Text text, SDL_Rect* word_rects, TTF_Font* font, int cursor_i
     boxRGBA(renderer, x1, y1, x2, y2, fekete.r, fekete.g, fekete.b, 255);
 }
 
-/*kirajzolja a szöveget:
-text: a szöveg
-font: az aláhúzatlan szövegtípus
-underlined: ugyanaz mint font, csak aláhúzva
-rects: a téglalapok listája, ahova az egyes szavak lesznek berajzolva
-renderer: a renderer
-color1: azoknak a szavaknak a színe, amik a kurzor után vannak (fekete)
-color2: azoknak a szavaknak a színe, amik már helyesen be lettek írva (zöld)
-color3: a háttérszín amivel jelöljük a helytelen gépelést (piros)
-target_index: annak a szónak az indexe, amit éppen be kell gépelni
-input: a játékos által begépelt szó*/
+/*
+kirajzolja a szöveget
+Text text: a szöveget tartalmazó struktúra
+TTF_Font* font: a betűtípus
+TTF_Font* underlined: ugyanaz mint font, csak aláhúzva
+SDL_Rect* word_rects: a szavak elrendezését és méretét tartalmazó tömb
+SDL_Renderer* renderer: a használt renderer
+SDL_Color color1: azoknak a szavaknak a színe, amik a kurzor után vannak (fekete)
+SDL_Color color2: azoknak a szavaknak a színe, amik már helyesen be lettek írva (zöld)
+SDL_Color color3: a háttérszín amivel jelöljük a helytelen gépelést (piros)
+int target_index: annak a szónak az indexe, amit éppen be kell gépelni
+char* input: a játékos által begépelt szó
+*/
 void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word_rects, SDL_Renderer* renderer, SDL_Color color1, SDL_Color color2, SDL_Color color3, int target_index, char* input) {
     char* word; //ez fog mutatni a kirajzolandó szóra
     char* target = text.words[target_index]; //ez mutat arra a szóra, amit aktuálisan be kell gépelni
@@ -287,7 +383,12 @@ void render_Text(Text text, TTF_Font* font, TTF_Font* underlined, SDL_Rect* word
 
 }
 
-//kirajzol egy kocsit
+/*
+kirajzol egy kocsit
+Car car: a rajzolandó kocsi adatait tároló struktúra
+SDL_Renderer* renderer: a használt renderer
+TTF_Font* font: a betűtípus
+*/
 void render_car(SDL_Renderer* renderer, Car car, TTF_Font* font) {
     Sint16 vx[8] = {car.x, car.x, car.x+car.w/8, car.x+car.w*3/8, car.x+car.w*5/8, car.x+car.w*7/8, car.x+car.w, car.x+car.w};
     Sint16 vy[8]= {car.y+car.h*4/5, car.y+car.h*2/5, car.y+car.h*2/5, car.y, car.y, car.y+car.h*2/5, car.y+car.h*2/5, car.y+car.h*4/5};
@@ -315,7 +416,12 @@ void render_car(SDL_Renderer* renderer, Car car, TTF_Font* font) {
     render_string_blended(car.name, fekete, font, car.x, car.y+car.h/2, renderer, Right);
 }
 
-/*Vizualizálja a ranglistát, color1 színnel a betűi, color2 színnel a háttér*/
+/*
+kirajzolja a ranglistát
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+SDL_Color color1: a betűszín
+SDL_Color color2: a háttérszín
+*/
 void render_leaderboard(GameData* game_data, SDL_Color color1, SDL_Color color2) {
     int top = (int)(game_data->margo);
     int bottom = (int)(game_data->magas - game_data->margo);
@@ -331,27 +437,33 @@ void render_leaderboard(GameData* game_data, SDL_Color color1, SDL_Color color2)
     top += rect.h + game_data->margo;
     int h = (bottom - top) / LEADERBOARD_SIZE;
     for (int i=0; i<leaderboard.num; i++) {
-        //rectangleRGBA(renderer, left, top+h*i, right, top+h*(i+1), color1.r, color1.g, color1.b, 255);
         char display_str[2*HOSSZ];
         sprintf(display_str, "%d.: %s, WPM: %.2f", i+1, leaderboard.entries[i].name, leaderboard.entries[i].wpm);
         render_string_blended(display_str, color1, font, (left+right)/2, top+h*(i+0.5), renderer, Middle);
     }
 }
 
-/*Vizualizál egy gombot, vigyázat, ha a szöveg túl nagy, kilóghat a dobozából a gombnak!*/
+/*kirajzol egy gombot
+Button button: a kirajzolandó gomb struktúrája
+SDL_Renderer* renderer: a használt renderer
+TTF_Font* font: a gomb szövegének betűtípusa
+Megj.: vigyázat, ha a szöveg túl nagy, kilóghat a dobozából a gombnak!
+*/
 void render_button(Button button, SDL_Renderer* renderer, TTF_Font *font) {
-    SDL_Rect text_rect;
-    text_rect.x = button.rect.x + button.rect.w * 0.1;
-    text_rect.y = button.rect.y + button.rect.h * 0.1;
-    text_rect.w = button.rect.w * 0.8;
-    text_rect.h = button.rect.h * 0.8;
     boxRGBA(renderer, button.rect.x, button.rect.y, button.rect.x + button.rect.w, button.rect.y + button.rect.h, button.color.r, button.color.g, button.color.b, 255);
     rectangleRGBA(renderer, button.rect.x, button.rect.y, button.rect.x + button.rect.w, button.rect.y + button.rect.h, 0, 0, 0, 255);
-    render_string_blended(button.str, button.str_color, font, text_rect.x+text_rect.w/2, text_rect.y + text_rect.h/2, renderer, Middle);
+    render_string_blended(button.str, button.str_color, font, button.rect.x + button.rect.w/2, button.rect.y + button.rect.h/2, renderer, Middle);
 }
 
-/*Kirajzolja a piros-sárga-zöld lámpát, lépteti a címként átvett countdown változót, és
-átállítja igaz-ra a címként átvett countdown_over változót, ha lejárt a visszaszámlálás*/
+/*
+Kirajzolja a piros-sárga-zöld lámpát, lépteti a címként átvett countdown változót, és
+átállítja igaz-ra a címként átvett countdown_over változót, ha lejárt a visszaszámlálás
+bool* countdown_over: a változó pointere, amiben jelöljük a visszaszámlálás lejárásának tényét
+SDL_Rect rect: a lámpa doboz téglalapja
+TTF_Font* font: a visszaszámlálás betűtípusa
+clock_t* t: a visszaszámlálást pörgető változó (ebben van az idő tárolva)
+SDL_Renderer* renderer: a használt renderer
+*/
 void handle_countdown_s(bool* countdown_over, SDL_Rect rect, int* countdown, TTF_Font *font, clock_t* t, SDL_Renderer* renderer) {
     if (countdown >= 0) {
         SDL_Color sarga = {255, 255, 0};
@@ -393,7 +505,12 @@ void handle_countdown_s(bool* countdown_over, SDL_Rect rect, int* countdown, TTF
     }
 }
 
-/*Vizualizálja a játékosokat, color1 színnel a betűi, color2 színnel a háttér*/
+/*
+Kirajzolja a multiplayer játékosok neveit
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+SDL_Color color1: a betűszín
+SDL_Color color2: a háttérszín
+*/
 void render_players(GameData* game_data, SDL_Color color1, SDL_Color color2) {
     int top = (int)(game_data->margo);
     int bottom = (int)(game_data->magas - game_data->margo);
@@ -414,7 +531,12 @@ void render_players(GameData* game_data, SDL_Color color1, SDL_Color color2) {
     }
 }
 
-/*Vizualizálja a botokhoz tartozó beállításokat, color1 színnel a betűket, color2-vel a hátteret*/
+/*
+Kirajzolja a botok beállításait
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+SDL_Color color1: a betűszín
+SDL_Color color2: a háttérszín
+*/
 void render_settings(GameData* game_data, SDL_Color color1, SDL_Color color2) {
     int top = (int)(game_data->margo);
     int bottom = (int)(game_data->magas - game_data->margo);

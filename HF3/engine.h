@@ -21,7 +21,7 @@ bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, S
 
 void handle_backspace(char* input);
 
-void handle_space(char* input, char* target, char* composition, SDL_Event event);
+void handle_space(char* input, char* target, SDL_Event event);
 
 void handle_textinput(char* input, char* composition, SDL_Event event);
 
