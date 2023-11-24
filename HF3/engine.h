@@ -65,7 +65,7 @@ Stats calculate_stats(int len, bool* correct, double* times);
 
 Uint32 idozit(Uint32 ms, void* param);
 
-void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, int btn_H, int btn_top, int input_top, SDL_Rect countdown_box, int text_top, int kocsi_margo, int dx, int car_right);
+void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, int btn_H, int btn_top, int input_top, SDL_Rect countdown_box, int kocsi_margo, int dx, int car_right);
 
 void run_single_game(GameData* game_data);
 

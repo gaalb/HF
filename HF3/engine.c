@@ -2,15 +2,16 @@
 
 /*
 Beolvas egy szoveget a billentyuzetrol.
-char *dest: ide �rja a beolvasott sz�veget, UTF-8 karakterk�dol�ssal
-size_t hossz: maximum ennyi b�jt hossz� sz�veget olvas be.
-SDL_Rect teglalap: a sz�vegbeviteli mez� hely�t �s m�ret�t megad� t�glalap.
-SDL_Color hatter: a mez� sz�ne.
-SDL_Color szoveg: a sz�veg sz�ne.
-TTF_Font *font: a bet�t�pus, amellyel rajzol.
+char *dest: ide írja a beolvasott szöveget, UTF-8 karakterkódolással
+size_t hossz: maximum ennyi bájt hosszú szöveget olvas be.
+SDL_Rect teglalap: a szövegbeviteli mezõ helyét és méretét megadó téglalap.
+SDL_Color hatter: a mezõ színe.
+SDL_Color szoveg: a szöveg színe.
+TTF_Font *font: a betûtípus, amellyel rajzol.
 SDL_Renderer *renderer: az ablak.
-Visszat�r�s: azt mondja meg, sikeres volt-e a beolvas�s
-Megj.:: ez a fuggveny infoC-rol lett kimasolva, ez megengedett a hazi feladat soran:
+bool* escape: az escape karaktert külön kezeljük, itt van jelezve, ha kaptunk egy escape-t (megszakítja a gépelést)
+Visszatérés: azt mondja meg, sikeres volt-e a beolvasás
+Megj.:: Ez a függvény minimális módosítással infoC-ről lett kimásolva. Ez megengedett a HF során:
 https://infoc.eet.bme.hu/sdl/#7
  */
 bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, SDL_Color szoveg, TTF_Font *font, SDL_Renderer *renderer, bool* escape) {
@@ -52,7 +53,7 @@ bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, S
         if (w < maxw) {
             vlineRGBA(renderer, teglalap.x + w + 2, teglalap.y + 2, teglalap.y + teglalap.h - 3, szoveg.r, szoveg.g, szoveg.b, 192);
         }
-        /* megjeleniti a k�pernyon az eddig rajzoltakat */
+        /* megjeleniti a képernyon az eddig rajzoltakat */
         SDL_RenderPresent(renderer);
 
         SDL_Event event;
@@ -122,8 +123,8 @@ bool input_text(char *dest, size_t hossz, SDL_Rect teglalap, SDL_Color hatter, S
 }
 
 /*
-A backspace-es visszat�rl�st kezeli
-char* input: a string, amib�l t�rl�nk egy karaktert
+A backspace-es visszatörlést kezeli
+char* input: a string, amibõl törlünk egy karaktert
 */
 void handle_backspace(char* input) {
     int textlen = strlen(input);
@@ -151,11 +152,11 @@ void handle_backspace(char* input) {
 }
 
 /*
-Amennyiben helyesen van beg�pelve a sz�, tov�bbl�pteti a j�t�kot a k�vetkez�
-sz�ra space lenyom�s�ra
-char* input: a j�t�kos �ltal beg�pelt sz� (a beviteli doboz �ll�sa)
-char* target: a j�t�kos �ltal beg�pelend� sz�
-SDL_Event event: az event, ami miatt megh�vtuk a f�ggv�nyt
+Amennyiben helyesen van begépelve a szó, továbblépteti a játékot a következõ
+szóra space lenyomására
+char* input: a játékos által begépelt szó (a beviteli doboz állása)
+char* target: a játékos által begépelendõ szó
+SDL_Event event: az event, ami miatt meghívtuk a függvényt
 */
 void handle_space(char* input, char* target, SDL_Event event) {
     if (event.key.keysym.sym == SDLK_SPACE) {
@@ -169,10 +170,10 @@ void handle_space(char* input, char* target, SDL_Event event) {
 }
 
 /*
-A g�pel�st kezeli
-char* input: a j�t�kos �ltal beg�pelt sz� / a bemeneti doboz �ll�sa
-char* composition: az aktu�lis szerkeszt�st tartalmazza
-SDL_Event event: az event, ami miatt megh�vtuk a f�ggv�nyt
+A gépelést kezeli
+char* input: a játékos által begépelt szó / a bemeneti doboz állása
+char* composition: az aktuális szerkesztést tartalmazza
+SDL_Event event: az event, ami miatt meghívtuk a függvényt
 */
 void handle_textinput(char* input, char* composition, SDL_Event event) {
     /* A feldolgozott szoveg bemenete */
@@ -184,8 +185,8 @@ void handle_textinput(char* input, char* composition, SDL_Event event) {
 }
 
 /*
-V�letlenszer� sz�nt �s egy +-5 hat�ron bel�l v�lelten wpm-et ad a botoknak
-GameData* game_data: a j�t�k adatait tartalmaz� strukt�ra pointere
+Véletlenszerû színt és egy +-5 határon belül vélelten wpm-et ad a botoknak
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
 */
 void randomize_bots(GameData* game_data) {
     for (int i=0; i<BOT_NUM; i++) {
@@ -201,9 +202,9 @@ void randomize_bots(GameData* game_data) {
 }
 
 /*
-Inicializ�lja a botokat, hogy a k�s�bbi haszn�latkor m�r csak
-randomiz�lni kelljen �ket
-Bot bots[]: a botok t�mbje (hossza makr�k�nt van megadva:BOT_NUM)
+Inicializálja a botokat, hogy a késõbbi használatkor már csak
+randomizálni kelljen öket
+Bot bots[]: a botok tömbje (hossza makróként van megadva:BOT_NUM)
 */
 void init_bots(Bot bots[]) {
     for (int i=0; i<BOT_NUM; i++) {
@@ -218,10 +219,10 @@ void init_bots(Bot bots[]) {
 }
 
 /*
-Megadja, egy n�gysz�g�n bel�l esik-e egy (x,y) pont
-SDL_Rect rect: a n�gysz�g amin bel�l eshet a pont
-int x, y: a pont koordin�t�i
-Visszat�r�s: bool, benne van-e a pont
+Megadja, egy négyszögön belül esik-e egy (x,y) pont
+SDL_Rect rect: a négyszög amin belül eshet a pont
+int x, y: a pont koordinátái
+Visszatérés: bool, benne van-e a pont
 */
 bool in_rect(SDL_Rect rect, int x, int y) {
     bool X = (x >= rect.x) && (x <= rect.x + rect.w);
@@ -230,11 +231,12 @@ bool in_rect(SDL_Rect rect, int x, int y) {
 }
 
 /*
-az al�bbi f�ggv�nyek mind a k�vetkez�t teszik:
--megv�ltoztatj�k a j�t�kn�zetet
--kiraknak egy eventet, ami jelzi ennek a t�ny�t
-param�ter�k:
-
+az alábbi függvények mind a következõt teszik:
+-megváltoztatják a játéknézetet
+-kiraknak egy eventet, ami jelzi ennek a tényét
+paraméterük:
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+A szignatúrájuk megegyezik, mert mind 1-1 gombnhoz tartozó függvény
 */
 void go_to_single_game(GameData* game_data) {
     game_data->game_view = SingleGame;
@@ -271,11 +273,27 @@ void get_name(GameData* game_data) {
     SDL_PushEvent(&event);
 }
 
+void go_to_settings(GameData* game_data) {
+    game_data->game_view = Settings;
+    SDL_Event event;
+    event.type = GAME_VIEW_CHANGED_EVENT;
+    SDL_PushEvent(&event);
+}
+/*
+Reseteli mind a memóriában tárolt ranglistát, mind a fájlba írtat
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+*/
 void reset_leaderboard(GameData* game_data) {
     game_data->leaderboard.num = 0;
     save_leaderboard(game_data->leaderboard);
 }
 
+/*
+az alábbi függvények a botok beállításait változtató gombokhoz
+köthetők, és a megfelelő bot WPM-jét növelik/csökkentik, szignatúrájuk
+pedig megegyezik a többi gombhoz köthető függvényével
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+*/
 void bot1_up(GameData* game_data) {
     if (game_data->bots[0].expected_wpm < 200)
         game_data->bots[0].expected_wpm += 5;
@@ -316,13 +334,13 @@ void bot4_down(GameData* game_data) {
         game_data->bots[3].expected_wpm -= 5;
 }
 
-void go_to_settings(GameData* game_data) {
-    game_data->game_view = Settings;
-    SDL_Event event;
-    event.type = GAME_VIEW_CHANGED_EVENT;
-    SDL_PushEvent(&event);
-}
-
+/*
+Kiszámol egy játék után futtatott Stats statisztikát
+int len: az adatok száma
+bool* correct: tömb, ami megmutatja a szavak közül hány lett elsőre helyesen beírva
+double* times: tömb, ami megmutatja a szavakat hány mp volt beírni
+Visszatérés: Stats struktúra, amelyben a WPM és a helyes szavak aránya van
+*/
 Stats calculate_stats(int len, bool* correct, double* times) {
     double time_sum = 0;
     double num_correct = 0;
@@ -336,37 +354,92 @@ Stats calculate_stats(int len, bool* correct, double* times) {
     return stats;
 }
 
+/*
+Az SDL_AddTimer függvénynek átadott függvény
+Uint32 ms: az időzítő időköze, ms-ban
+void* param: tetszőleges paraméter (mi SDL_EventType-al használjuk majd)
+Visszatérés: az időzítő ID-je, amivel később fel kell szabadítani
+*/
 Uint32 idozit(Uint32 ms, void* param) {
+    /*
+    ennek a függvénynek egy SDL_EventType*-t adunk át, és ez lesz az az event, amit
+    kibocsájt a timer akkor, mikor tick-el
+    */
     SDL_Event event;
     event.type = *(SDL_EventType*)param;
     SDL_PushEvent(&event);
     return ms;
 }
 
-void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, int btn_H, int btn_top, int input_top, SDL_Rect countdown_box, int text_top, int kocsi_margo, int dx, int car_right) {
+/*
+A qsort-hoz használt összehasonlító függvény
+const void *a, b: az összehasonlítandó elemek
+Visszatérés:
+0, ha a->wpm = b->wpm
++, ha a->wpm < b->wpm
+-, ha a->wpm > b->wpm
+*/
+int compare_wpm(const void *a, const void *b) {
+    return (int)((Bot*)b)->expected_wpm - ((Bot*)a)->expected_wpm;
+}
+
+/*
+Blokkol, amíg meg nem nyomunk egy gombot, vagy ki nem lépünk X-szel
+*/
+void wait_for_keypress() {
+    SDL_Event event;
+    bool quit = false;
+    while (!quit && SDL_WaitEvent(&event)) {
+        switch (event.type) {
+            case SDL_KEYDOWN:
+                quit = true;
+                return;
+            case SDL_QUIT:
+                quit=true;
+                SDL_PushEvent(&event);
+                return;
+        }
+    }
+}
+
+/*
+Ez az a függvény, ami magáért a játékmenetért felelős. Átveszi a játék alatti UI megjelenítéshez használatos
+változókat, amiket a játékmódtól függően kell beállítania az őt meghívó függvénynek
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+Text text: a szöveget tartalmazó struktúra
+SDL_Rect* word_rects: a szavak elrendezését és méretét tartalmazó tömb
+int btn_W, btn_H: a gombok szélessége, magassága
+int btn_top: a gombok tetejének y koordinátája
+int input_top: az inputra használt doboz tetejének y koordinátája
+SDL_Rect countdown_box: a viszaszámláláshoz használt téglalap
+int kocsi_margo: a képernyő teteje és a kocsi display teteje között kihagyott margó szélessége
+int dx: a kocsik által egy 'tick' alatt megtett távolság
+int car_right: ahol megállnak a kocsik a képernyő jobb szélén
+*/
+void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, int btn_H, int btn_top, int input_top, SDL_Rect countdown_box, int kocsi_margo, int dx, int car_right) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
     TTF_Font* underlined = game_data->underlined;
-    /*A felhaszn�lt sz�nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color zold = {0, 255, 0};
     SDL_Color vilagos_kek = {120, 150, 255};
     SDL_Color vilagos_piros = {255, 114, 118};
-    //a statisztik�hoz haszn�lt v�ltoz�k:
+    //a statisztikához használt változók:
     bool* correct = (bool*) malloc(sizeof(bool)*text.word_count);
     double* times = (double*) malloc(sizeof(double)*text.word_count);
     for (int i=0; i<text.word_count; i++) {
         correct[i] = true;
         times[i] = 0.0;
     }
-    //ahova a sz�veg �r�dik majd:
+    //az UI elrendezés
     SDL_Rect input_box = {game_data->margo, input_top, game_data->szeles-2*game_data->margo, game_data->margo};
     Button menu_button = {{game_data->szeles-btn_W-2*game_data->margo, btn_top, btn_W, btn_H}, feher, fekete, "Menu", go_to_menu};
     Button settings_button = {{2*game_data->margo, btn_top, btn_W, btn_H}, feher, fekete, "Settings", go_to_settings};
-    const int num_buttons = 2; //csak 2 gomb: men�be l�p�s, �s be�ll�t�sokba l�p�s
+    const int num_buttons = 2; //csak 2 gomb: menübe lépés, és beállításokba lépés
     Button buttons[2] = {menu_button, settings_button};
-    //az �rogat�shoz haszn�lt seg�dv�ltoz�k
+    //az írogatáshoz használt segédváltozók
     char input[HOSSZ] = "";
     char composition[SDL_TEXTEDITINGEVENT_TEXT_SIZE] = "";
     char textandcomposition[HOSSZ + SDL_TEXTEDITINGEVENT_TEXT_SIZE + 1] = "";
@@ -378,12 +451,15 @@ void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, i
     SDL_StartTextInput();
     SDL_Event event;
     clock_t t;
+    //a játéknak vége lehet, ha a game_view olynara változik, ahol nincs játék, vagy ha elértük az utolsót szót, vagy ki akarunk lépni
     while (!quit && (game_data->game_view == BotGame || game_data->game_view == SingleGame ||game_data->game_view == MultiGame) && i <text.word_count && SDL_WaitEvent(&event)) {
         char* target = text.words[i];
         if (countdown_over) {
+            //ha a game_view-nak megfelelő nem-játékos kocsikat léptessük jobbra, ha a saját eventjüket érzékeljük
             if (game_data->game_view == BotGame) {
                 for (int j=0; j<BOT_NUM; j++) {
                     if (game_data->bots[j].tick == event.type) {
+                        //ne csússzon le az ablak jobb széléről
                         game_data->bots[j].car.x = game_data->bots[j].car.x+dx < car_right? game_data->bots[j].car.x+dx : car_right;
                         draw = true;
                     }
@@ -392,6 +468,7 @@ void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, i
             if (game_data->game_view == MultiGame) {
                 for (int j=0; j<game_data->players; j++) {
                     if (game_data->multis[j].active && game_data->multis[j].tick == event.type) {
+                        //ne csússzon le az ablak jobb széléről
                         game_data->multis[j].car.x = game_data->multis[j].car.x+dx < car_right ? game_data->multis[j].car.x+dx : car_right;
                         draw = true;
                     }
@@ -406,8 +483,10 @@ void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, i
                 break;
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
+                    //bal egérgombra meg kell nézni, beleesik-e valamelyik gomb területére a kattintás
                     for (int j=0; j<num_buttons; j++) {
                         if (in_rect(buttons[j].rect, event.button.x, event.button.y)) {
+                            //ha igen, akkor a gomb függvényét meghívjuk
                             buttons[j].func(game_data);
                             draw = true;
                             break;
@@ -443,17 +522,25 @@ void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, i
                  }
                  break;
             case NEXT_WORD_EVENT:
+                /*
+                ezt az eventet egy helyesen begépelt szó utáni space emittálja, ilyenkör a
+                következők a teendők:
+                -elmenteni az időt a statisztikához
+                -lépteti a következő szóra a játékot
+                -lépteti a játékos kocsiját jobbra
+                -jelzi, hogy rajzolni kell
+                -kitörli, ha valami be volt írva a beviteli dobozba
+                */
                 times[i] = ((double)(clock() - t))/CLOCKS_PER_SEC;
                 t = clock();
                 i++;
                 game_data->player_car.x += dx;
-                if (i == text.word_count) {
-                    break;
+                if (i != text.word_count) {
+                    SDL_StartTextInput();
+                    input[0] = '\0';
+                    composition[0] = '\0';
+                    draw = true;
                 }
-                SDL_StartTextInput();
-                input[0] = '\0';
-                composition[0] = '\0';
-                draw = true;
                 break;
             case SDL_QUIT:
                 SDL_PushEvent(&event);
@@ -464,7 +551,7 @@ void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, i
             clear_screen(game_data, vilagos_kek);
             bool inputCorrect = input_correct(target, input);
             SDL_Color inputColor = inputCorrect ? feher : vilagos_piros;
-            if (!inputCorrect && correct[i]) {
+            if (!inputCorrect && correct[i]) { //rosszul begépelt szó tényének jelölése, statisztikához
                 correct[i] = false;
             }
             render_input(input, input_box, inputColor , font, renderer, composition, textandcomposition);
@@ -476,11 +563,13 @@ void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, i
             }
             if (game_data->game_view == MultiGame) {
                 for (int j=0; j<game_data->players; j++) {
+                    //Mivel a játékos kocsija szerepel a multis tömbben is, csak azokat kell kirajzolni akik nem a  játékos
                     if (strcmp(game_data->player_car.name, game_data->multis[j].car.name) != 0) {
                         render_car(renderer, game_data->multis[j].car, font);
                     }
                 }
             }
+            //a játékos kocsiját pedig alulra kell rajzolni
             render_car(renderer, game_data->player_car, font);
             for (int j=0; j<num_buttons; j++) {
                 render_button(buttons[j], renderer, font);
@@ -498,18 +587,31 @@ void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, i
     free(times);
 }
 
+/*
+Gombnyomásra meghívódó függvény, ezért void, és bemenete:
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+Beállítja a konkrét játékmenetet, és játék nézetet befolyásoló beállításokat run_game-nek, egy gyakorló játékoz
+A gyakorló játék alatt nincsenek Bot kocsik, csak a játékos egyedül
+*/
 void run_single_game(GameData* game_data) {
     TextArray* textarray = game_data->p_textarray;
     Text text = textarray->texts[rand()%textarray->text_count];
     TTF_Font* font = game_data->font;
     game_data->players = 1;
-    //a felhaszn�lt timer-ek:
+    //a felhasznált timer-ek (single game esetén csak 1, a visszaszámláláshoz)
     SDL_EventType tick_sec = TICK_SEC;
     SDL_TimerID sec_tick = SDL_AddTimer(1000, idozit, &tick_sec);
-    const int N = game_data->players; //ennyi kocsi lesz a k�perny�n, ett�l f�gg�en kell elrendezni a UI-t
+    const int N = game_data->players; //ennyi kocsi lesz a képernyőn, ettől függően kell elrendezni a UI-t
     const int btn_H = 80;
     const int btn_W = 150;
-    //UI elrendez�s_
+    /*
+    UI elrendezés:
+    -Attól függően, hány kocsi van a képernyőn, változtatni kell az elemek helyét, margóját
+    -Alulról felfele minden az alatta lévő elem tetejéhez van horgonyozva
+    -A legtöbb UI elem mérete fix, és a helyzetük/kihagyás köztük változik
+    -Kivétel a kocsik, amiknek a mérete is változik:
+        *a kocsik mérete akkora, hogy N kocsi beférjen a képernyő teteje és a szöveg teteje közé
+    */
     int btn_top = game_data->magas - btn_H - (int)((5.0/4.0 - 1.0/4.0*(double)N)*game_data->margo);
     int input_top = btn_top - (int)((-0.125*N + 2.125)*game_data->margo);
     SDL_Rect countdown_box = {game_data->szeles/2-1.6*btn_H, input_top-btn_H, 3.2*btn_H, 0.8*btn_H};
@@ -526,32 +628,53 @@ void run_single_game(GameData* game_data) {
     game_data->player_car.y = kocsi_margo;
     game_data->player_car.w = car_w;
     game_data->player_car.h = car_h;
-    strcpy(game_data->player_car.name, " ");
-    run_game(game_data, text, word_rects, btn_W, btn_H, btn_top, input_top, countdown_box, text_top, kocsi_margo, dx, car_right);
+    strcpy(game_data->player_car.name, "You ");
+    //minden UI elem be lett állítva, futhat a játék:
+    run_game(game_data, text, word_rects, btn_W, btn_H, btn_top, input_top, countdown_box, kocsi_margo, dx, car_right);
+    //Játék után fel kell szabadítani amiket foglaltunk
     SDL_RemoveTimer(sec_tick);
+    free(word_rects);
+    /*
+    Ha a játéknézet változatlanul SingleGame, az azt jelenti, hogy végigfutott a játék,
+    célba ért a játékos, vagyis statisztikát kell készíteni. Ha nem ért volna célba,
+    akkor az azért van, mert gombnyomással megpróbált nézetet váltani, tehát nincs
+    szükség statisztikára.
+    */
     if (game_data->game_view == SingleGame) {
         game_data->game_view = Statistics;
         SDL_Event event;
         event.type = GAME_VIEW_CHANGED_EVENT;
         SDL_PushEvent(&event);
     }
-    free(word_rects);
-}
 
+}
+/*
+Gombnyomásra meghívódó függvény, ezért void, és bemenete:
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+Beállítja a konkrét játékmenetet, és játék nézetet befolyásoló beállításokat run_game-nek, egy
+botok elleni játékoz. A botok elleni játéknál 4 bot + 1 játékos versenyzik -> 5 kocsi
+*/
 void run_bot_game(GameData* game_data) {
     TextArray* textarray = game_data->p_textarray;
     Text text = textarray->texts[rand()%textarray->text_count];
     TTF_Font* font = game_data->font;
     game_data->players = 5;
     randomize_bots(game_data);
-    //a felhaszn�lt timer-ek:
+    //a felhasznált timer-ek:
     SDL_EventType tick_sec = TICK_SEC;
     SDL_TimerID sec_tick = SDL_AddTimer(1000, idozit, &tick_sec);
     SDL_TimerID timer_ids[BOT_NUM];
-    const int N = game_data->players; //ennyi kocsi lesz a k�perny�n, ett�l f�gg�en kell elrendezni a UI-t
+    const int N = game_data->players; //ennyi kocsi lesz a képernyõn, ettõl függõen kell elrendezni a UI-t
     const int btn_H = 80;
     const int btn_W = 150;
-    //UI elrendez�s_
+    /*
+    UI elrendezés:
+    -Attól függően, hány kocsi van a képernyőn, változtatni kell az elemek helyét, margóját
+    -Alulról felfele minden az alatta lévő elem tetejéhez van horgonyozva
+    -A legtöbb UI elem mérete fix, és a helyzetük/kihagyás köztük változik
+    -Kivétel a kocsik, amiknek a mérete is változik:
+        *a kocsik mérete akkora, hogy N kocsi beférjen a képernyő teteje és a szöveg teteje közé
+    */
     int btn_top = game_data->magas - btn_H - (int)((5.0/4.0 - 1.0/4.0*(double)N)*game_data->margo);
     int input_top = btn_top - (int)((-0.125*N + 2.125)*game_data->margo);
     SDL_Rect countdown_box = {game_data->szeles/2-1.6*btn_H, input_top-btn_H, 3.2*btn_H, 0.8*btn_H};
@@ -564,6 +687,8 @@ void run_bot_game(GameData* game_data) {
     int car_left = game_data->margo*2;
     int car_right = game_data->szeles-game_data->margo-car_w;
     int dx = (car_right-car_left)/text.word_count;
+    /*Minden kocsihoz tartozik egy event, és egy időzítő. Mikor az időzítő tickel, az eventet
+    meg kell hívni.*/
     for (int i=0; i<BOT_NUM; i++) {
         timer_ids[i] = SDL_AddTimer(game_data->bots[i].ms, idozit, &(game_data->bots[i].tick));
         game_data->bots[i].car.x = car_left;
@@ -576,56 +701,56 @@ void run_bot_game(GameData* game_data) {
     game_data->player_car.w = car_w;
     game_data->player_car.h = car_h;
     strcpy(game_data->player_car.name, "You");
-    run_game(game_data, text, word_rects, btn_W, btn_H, btn_top, input_top, countdown_box, text_top, kocsi_margo, dx, car_right);
+    //minden UI elem és időzítő be lett állítva, futhat a játék:
+    run_game(game_data, text, word_rects, btn_W, btn_H, btn_top, input_top, countdown_box, kocsi_margo, dx, car_right);
+    //Játék után fel kell szabadítani amiket foglaltunk, beleértve az időzítőket
     SDL_RemoveTimer(sec_tick);
+    free(word_rects);
     for (int i=0; i<BOT_NUM; i++) {
         game_data->bots[i].active = false;
         SDL_RemoveTimer(timer_ids[i]);
     }
+    /*
+    Ha a játéknézet változatlanul BotGame, az azt jelenti, hogy végigfutott a játék,
+    célba ért a játékos, vagyis statisztikát kell készíteni. Ha nem ért volna célba,
+    akkor az azért van, mert gombnyomással megpróbált nézetet váltani, tehát nincs
+    szükség statisztikára.
+    */
     if (game_data->game_view == BotGame) {
         game_data->game_view = Statistics;
         SDL_Event event;
         event.type = GAME_VIEW_CHANGED_EVENT;
         SDL_PushEvent(&event);
     }
-    free(word_rects);
 }
 
-void wait_for_keypress() {
-    SDL_Event event;
-    bool quit = false;
-    while (!quit && SDL_WaitEvent(&event)) {
-        switch (event.type) {
-            case SDL_KEYDOWN:
-                quit = true;
-                return;
-            case SDL_QUIT:
-                quit=true;
-                SDL_PushEvent(&event);
-                return;
-        }
-    }
-}
-
-int compare_wpm(const void *a, const void *b) {
-    return (int)((Bot*)b)->expected_wpm - ((Bot*)a)->expected_wpm;
-}
-
+/*
+Gombnyomásra meghívódó függvény, ezért void, és bemenete:
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+Beállítja a konkrét játékmenetet, és játék nézetet befolyásoló beállításokat run_game-nek, egy
+többjátékos játékoz.
+A többjátékos játék elindításához természetesen először a játékosok számára és neveire van szükség
+*/
 void run_multi_game(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
     TextArray* textarray = game_data->p_textarray;
     Text text = textarray->texts[rand()%textarray->text_count];
-    /*A felhaszn�lt sz�nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
     SDL_Color szurke = {195, 195, 195};
     game_data->players = 0;
+    /*
+    -eleinte 0 játékossal indulunk, addig kérünk be játékosokat, amíg 5-öt nem kapunk
+    -a játékosok minimum száma 2, hiszen ha 1 játékos van csak, az single player nem multiplayer
+    */
     do {
         clear_screen(game_data, vilagos_kek);
         char display_str[2*HOSSZ];
-        sprintf(display_str, "Enter player name, or ESC for Menu!");
+        //prompt, hogy írjanak be neveket:
+        sprintf(display_str, "Enter 2+ player names! ESC for Menu.");
         render_string_blended(display_str, fekete, font, game_data->szeles/4, game_data->magas/2-2*game_data->margo, renderer, Middle);
         render_players(game_data, fekete, szurke);
         SDL_RenderPresent(renderer);
@@ -633,14 +758,16 @@ void run_multi_game(GameData* game_data) {
         char input[HOSSZ];
         bool esc;
         if (!input_text(input, HOSSZ, input_box, feher, fekete, font, renderer, &esc)) {
-            if (esc) {
+            if (esc) { //ha escape-t nyomt a gépelő gépelés közben, azzal jelzi, hogy vissza akar lépni a menübe
                 go_to_menu(game_data);
                 return;
             }
             break;
         }
+        //A gépelés sikeres, ha entert kaptunk. Ha volt gépelve név, mentsük el az adatait a game_data->multis tömbbe
         if (input[0] != '\0') {
             game_data->players++;
+            //Nem tudni előre hány játékos lesz, ezért dinamikusan foglaljuk multis-t
             game_data->multis = (Bot*) realloc(game_data->multis, sizeof(Bot)*game_data->players);
             SDL_Color new_color = {rand()%255, rand()%255, rand()%255};
             Car new_car = {0, 0, 0, 0, new_color, fekete, ""};
@@ -648,17 +775,28 @@ void run_multi_game(GameData* game_data) {
             Bot new_player = {0, 0, new_car, TICK_SEC+BOT_NUM+game_data->players, false};
             game_data->multis[game_data->players-1] = new_player;
         } else if (game_data->players < 2) {
+            //Ha a gépelés sikeres, de nincs még elég játékos, ne engedjük tovább lépni
             printf("Need more players!\n");
         } else {
             break;
         }
     } while (game_data->players < 5);
+    if(game_data->players == 0) { //ez úgy lehetésges, ha ki X-elték az ablakot, kerüljük el a 0-val osztást alább
+        return;
+    }
     SDL_EventType tick_sec = TICK_SEC;
     SDL_TimerID sec_tick = SDL_AddTimer(1000, idozit, &tick_sec);
-    const int N = game_data->players; //ennyi nem-player lesz a k�perny�n, ett�l f�gg�en kell elrendezni a UI-t
+    const int N = game_data->players; //ennyi kocsi lesz a képernyőn, ettől függően kell elrendezni a UI-t
     const int btn_H = 80;
     const int btn_W = 150;
-    //UI elrendez�s_
+    /*
+    UI elrendezés:
+    -Attól függően, hány kocsi van a képernyőn, változtatni kell az elemek helyét, margóját
+    -Alulról felfele minden az alatta lévő elem tetejéhez van horgonyozva
+    -A legtöbb UI elem mérete fix, és a helyzetük/kihagyás köztük változik
+    -Kivétel a kocsik, amiknek a mérete is változik:
+        *a kocsik mérete akkora, hogy N kocsi beférjen a képernyő teteje és a szöveg teteje közé
+    */
     int btn_top = game_data->magas - btn_H - (int)((5.0/4.0 - 1.0/4.0*(double)N)*game_data->margo);
     int input_top = btn_top - (int)((-0.125*N + 2.125)*game_data->margo);
     SDL_Rect countdown_box = {game_data->szeles/2-1.6*btn_H, input_top-btn_H, 3.2*btn_H, 0.8*btn_H};
@@ -675,9 +813,11 @@ void run_multi_game(GameData* game_data) {
     game_data->player_car.w = car_w;
     game_data->player_car.h = car_h;
     SDL_TimerID timer_ids[BOT_NUM];
+    //Ahány játékos lett, annyiszer kell futtatni a játékot, mindig kicsit eltérő beállításokkal
     for (int i=0; i<game_data->players && game_data->game_view == MultiGame; i++) {
         int y=kocsi_margo;
         strcpy(game_data->player_car.name, game_data->multis[i].car.name);
+        //Az éppen játszó játékos kocsiját ki kell hagyni a felül lévő nem-játékos kocsik közül: az a player_car lesz
         for (int j=0; j<game_data->players; j++) {
             game_data->multis[j].car.x = car_left;
             game_data->multis[j].car.y = y;
@@ -688,15 +828,18 @@ void run_multi_game(GameData* game_data) {
             }
         }
         game_data->player_car.x = car_left;
+        /*Minden korábbi játékos kocsihoz tartozik egy event, és egy időzítő. Mikor az időzítő tickel, az eventet
+        meg kell hívni. Ezek a kocsik fogják mutatni a sebességünket a korábbi játékosokhoz képest.*/
         for (int j=0; j<i; j++) {
             timer_ids[j] = SDL_AddTimer(game_data->multis[j].ms, idozit, &(game_data->multis[j].tick));
             game_data->multis[j].car.x = car_left;
         }
-        //-----------------------------------------
-        run_game(game_data, text, word_rects, btn_W, btn_H, btn_top, input_top, countdown_box, text_top, kocsi_margo, dx, car_right);
-        //-----------------------------------------
+        //minden UI elem és időzítő be lett állítva, futhat a játék:
+        run_game(game_data, text, word_rects, btn_W, btn_H, btn_top, input_top, countdown_box, kocsi_margo, dx, car_right);
+        //ha végzett egy játékos, mentsük el a wpm-jét, hogy az utána játszók láthassák mennyire volt gyors
         game_data->multis[i].expected_wpm = game_data->stats.wpm;
         game_data->multis[i].ms = 60000/game_data->stats.wpm;
+        //az 'active' jelzi, hogy már játszott korábban: aktív a kocsija, következő körben lesz egy timer ami mozgatja
         game_data->multis[i].active = true;
         for (int j=0; j<i; j++) {
             SDL_RemoveTimer(timer_ids[j]);
@@ -706,11 +849,19 @@ void run_multi_game(GameData* game_data) {
         sprintf(display_str, "WPM: %.2f. Accuracy: %.2f%%. Press any key to continue.", game_data->stats.wpm, game_data->stats.accuracy*100);
         render_string_blended(display_str, fekete, font, game_data->szeles/2, game_data->magas/2, renderer, Middle);
         SDL_RenderPresent(renderer);
+        //várjunk egy gombnyomásra, hogy az előző és következő játékos helyet cserélhessenek a székben
         if (game_data->game_view == MultiGame) {
             wait_for_keypress();
         }
     }
+    /*
+    Ha a játéknézet változatlanul MultiGame, az azt jelenti, hogy végigfutott a játék,
+    célba ért az összes játékos, vagyis statisztikát kell készíteni. Ha valaki nem ért volna célba,
+    akkor az azért van, mert gombnyomással megpróbáltak nézetet váltani, tehát nincs
+    szükség statisztikára.
+    */
     if (game_data->game_view == MultiGame) {
+        //dobogó kiíratáshoz rendezzük WPM szerint csökkenő sorrendben a játékosokat
         qsort(game_data->multis, game_data->players, sizeof(Bot), compare_wpm);
         for (int i=0; i<game_data->players; i++) {
             //printf("%d.: %s, wpm: %.2f\n", i+1, game_data->multis[i].car.name, game_data->multis[i].expected_wpm);
@@ -731,7 +882,7 @@ void main_menu(GameData* game_data) {
     int W = 500;
     int H = 100;
     const int num_buttons = 4;
-    /*A felhaszn�lt sz�nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
@@ -777,7 +928,7 @@ void main_menu(GameData* game_data) {
 void settings(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font =  game_data->font;
-    /*A felhaszn�lt sz�nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
@@ -833,7 +984,7 @@ void multi_statistics(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
     Stats stats = game_data->stats;
-    /*A felhaszn�lt sz�nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
@@ -885,7 +1036,7 @@ void statistics(GameData* game_data) {
     TTF_Font* font = game_data->font;
     Stats stats = game_data->stats;
     LeaderBoard leaderboard = game_data->leaderboard;
-    /*A felhaszn�lt sz�nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
@@ -930,7 +1081,7 @@ void statistics(GameData* game_data) {
 void ask_name(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
-    /*A felhaszn�lt sz�nek:*/
+    /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
