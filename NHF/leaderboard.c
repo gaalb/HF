@@ -160,3 +160,4 @@ bool top10(LeaderBoard leaderboard, double wpm) {
     }
 }
 
+

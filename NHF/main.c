@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+﻿#include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_ttf.h>
 #include <math.h>
@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     sdl_init(szeles, magas, FONT, &window, &renderer, &font, &underlined, &title);
-    TextArray textarray = parse_file("hobbit_long.txt"); //töltsük be a fájlt, amiből generáljuk a szövegeket
+    TextArray textarray = parse_file("hobbit.txt"); //töltsük be a fájlt, amiből generáljuk a szövegeket
     Car player_car = {0, 0, 0, 0, {255, 0, 0, 0}, {0, 0, 0}, "You"}; // a játékos kocsija mindig piros
     GameView game_view = MainMenu;
     /*
