@@ -588,7 +588,7 @@ void run_game(GameData* game_data, Text text, SDL_Rect* word_rects, int btn_W, i
 }
 
 /*
-Gombnyomásra meghívódó függvény, ezért void, és bemenete:
+A single player 'gyakorló' játék lefuttatásáért felelős függvény
 GameData* game_data: a játék adatait tartalmazó struktúra pointere
 Beállítja a konkrét játékmenetet, és játék nézetet befolyásoló beállításokat run_game-nek, egy gyakorló játékoz
 A gyakorló játék alatt nincsenek Bot kocsik, csak a játékos egyedül
@@ -648,8 +648,9 @@ void run_single_game(GameData* game_data) {
     }
 
 }
+
 /*
-Gombnyomásra meghívódó függvény, ezért void, és bemenete:
+A botok elleni játék lefuttatásáért felelős függvény
 GameData* game_data: a játék adatait tartalmazó struktúra pointere
 Beállítja a konkrét játékmenetet, és játék nézetet befolyásoló beállításokat run_game-nek, egy
 botok elleni játékoz. A botok elleni játéknál 4 bot + 1 játékos versenyzik -> 5 kocsi
@@ -725,7 +726,7 @@ void run_bot_game(GameData* game_data) {
 }
 
 /*
-Gombnyomásra meghívódó függvény, ezért void, és bemenete:
+A multiplayer játék lefuttatásáért felelős függvény
 GameData* game_data: a játék adatait tartalmazó struktúra pointere
 Beállítja a konkrét játékmenetet, és játék nézetet befolyásoló beállításokat run_game-nek, egy
 többjátékos játékoz.
@@ -876,6 +877,11 @@ void run_multi_game(GameData* game_data) {
     free(word_rects);
 }
 
+/*
+A főmenü játéknézetért felelős függvény
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+Rendereli a megfelelő gombokat, amelyekkel át lehet menni a másik játéknézetekbe
+*/
 void main_menu(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
@@ -887,6 +893,7 @@ void main_menu(GameData* game_data) {
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
     SDL_Color piros = {220, 50, 50};
+    //az alábbi gombokra lesz szükség:
     Button settings_button = {{game_data->szeles/2-W/2, 90, W, H}, feher, fekete, "Settings & Leaderboard", go_to_settings};
     Button single_game_button = {{game_data->szeles/2-W/2, settings_button.rect.y+H+30, W, H}, feher, fekete, "Practice", go_to_single_game};
     Button bot_game_button = {{game_data->szeles/2-W/2, single_game_button.rect.y+H+30, W, H}, feher, fekete, "Play vs Bots", go_to_bot_game};
@@ -895,12 +902,15 @@ void main_menu(GameData* game_data) {
     bool quit = false;
     bool draw = true;
     SDL_Event event;
+    /*A főmenü event loopban maradunk, amíg nem változik meg a nézet (gombnyomás hatására), vagy X-elik ki az ablakot*/
     while (!quit && game_data->game_view == MainMenu && SDL_WaitEvent(&event)) {
         switch (event.type) {
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
+                    //bal egérgombra meg kell nézni, beleesik-e valamelyik gomb területére a kattintás
                     for (int i=0; i<num_buttons; i++) {
                         if (in_rect(buttons[i].rect, event.button.x, event.button.y)) {
+                            //ha igen, akkor a gomb függvényét meghívjuk
                             buttons[i].func(game_data);
                             draw = true;
                             break;
@@ -925,6 +935,11 @@ void main_menu(GameData* game_data) {
     }
 }
 
+/*
+A beállítások / ranglista játéknézetért felelős függvény
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+Rendereli a megfelelő gombokat, amelyekkel át lehet menni a másik játéknézetekbe
+*/
 void settings(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font =  game_data->font;
@@ -933,9 +948,10 @@ void settings(GameData* game_data) {
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
     SDL_Color szurke = {195, 195, 195};
+    //az alábbi gombokra lesz szükség:
+    const int num_buttons = 10;
     Button menu_button = {{game_data->szeles*0.4-160, game_data->margo, 160, 60}, feher, fekete, "Menu", go_to_menu};
     Button reset_leader_button = {{game_data->szeles - game_data->margo-160, game_data->margo, 160, 60}, feher, fekete, "Reset", reset_leaderboard};
-    const int num_buttons = 10;
     Button bot1_up_btn = {{game_data->szeles*0.4-40, 118, 40, 40}, feher, fekete, "+", bot1_up};
     Button bot2_up_btn = {{game_data->szeles*0.4-40, 162, 40, 40}, feher, fekete, "+", bot2_up};
     Button bot3_up_btn = {{game_data->szeles*0.4-40, 206, 40, 40}, feher, fekete, "+", bot3_up};
@@ -949,10 +965,12 @@ void settings(GameData* game_data) {
     bool quit = false;
     bool draw = true;
     SDL_Event event;
+    /*Az event loopban maradunk, amíg nem változik meg a nézet (gombnyomás hatására), vagy X-elik ki az ablakot*/
     while (!quit && game_data->game_view == Settings && SDL_WaitEvent(&event)) {
         switch (event.type) {
             case SDL_MOUSEBUTTONDOWN:
                 if (event.button.button == SDL_BUTTON_LEFT) {
+                    //bal egérgombra meg kell nézni, beleesik-e valamelyik gomb területére a kattintás
                     for (int i=0; i<num_buttons; i++) {
                         if (in_rect(buttons[i].rect, event.button.x, event.button.y)) {
                             buttons[i].func(game_data);
@@ -980,18 +998,24 @@ void settings(GameData* game_data) {
     }
 }
 
+/*
+A multiplayer statisztika vizualizációjáért felelős függvény
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+*/
 void multi_statistics(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
-    Stats stats = game_data->stats;
+    //Stats stats = game_data->stats;
     /*A felhasznált színek:*/
     SDL_Color fekete = {0, 0, 0};
     SDL_Color feher = {255, 255, 255};
     SDL_Color vilagos_kek = {120, 150, 255};
     clear_screen(game_data, vilagos_kek);
     char display_str[2*HOSSZ];
+    //mire ide jutunk, a game_data->multis már rendezve van WPM szerint csökkeő sorrendbe, csak ki kell írni őket
     for (int i=0; i<game_data->players; i++) {
         sprintf(display_str, "%d.: %s, WPM: %.2f. ", i+1, game_data->multis[i].car.name, game_data->multis[i].expected_wpm);
+        //ha ranglistát érdemel a WPM, akkor ennek a tényét jelezzük és frissítsük a ranglistát
         if (top10(game_data->leaderboard, game_data->multis[i].expected_wpm)) {
             strcat(display_str, "Earned a Leaderboard spot!");
             LeaderboardEntry entry;
@@ -1001,7 +1025,7 @@ void multi_statistics(GameData* game_data) {
         }
         render_string_blended(display_str, fekete, font, game_data->szeles/2, game_data->margo*(i+2), renderer, Middle);
     }
-    sprintf(display_str, "WPM: %.2f. Accuracy: %.2f%%.", stats.wpm, stats.accuracy*100);
+    //az alábbi gombokra lesz szükség:
     Button menu_button = {{game_data->szeles/2-100, game_data->magas-150, 200, 100}, feher, fekete, "Menu", go_to_menu};
     Button settings_button = {{menu_button.rect.x, menu_button.rect.y - menu_button.rect.h-game_data->margo, menu_button.rect.w, menu_button.rect.h}, feher, fekete, "Settings", go_to_settings};
     Button buttons[2] = {menu_button, settings_button};
@@ -1011,6 +1035,7 @@ void multi_statistics(GameData* game_data) {
     SDL_RenderPresent(renderer);
     bool quit = false;
     SDL_Event event;
+    /*Az event loopban maradunk, amíg nem változik meg a nézet (gombnyomás hatására), vagy X-elik ki az ablakot*/
     while (!quit && game_data->game_view == MultiStatistics && SDL_WaitEvent(&event)) {
         switch (event.type) {
             case SDL_MOUSEBUTTONDOWN:
@@ -1031,6 +1056,10 @@ void multi_statistics(GameData* game_data) {
     }
 }
 
+/*
+A single player és botok elleni játék utáni statisztika vizualizációjáért felelős függvény
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+*/
 void statistics(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
@@ -1042,8 +1071,11 @@ void statistics(GameData* game_data) {
     SDL_Color vilagos_kek = {120, 150, 255};
     char display_str[2*HOSSZ];
     sprintf(display_str, "WPM: %.2f. Accuracy: %.2f%%.", stats.wpm, stats.accuracy*100);
+    //erre a két gombra lesz szükség
     Button menu_button = {{game_data->szeles/2-100, game_data->magas-150, 200, 100}, feher, fekete, "Menu", go_to_menu};
     Button settings_button = {{menu_button.rect.x, menu_button.rect.y - menu_button.rect.h-game_data->margo, menu_button.rect.w, menu_button.rect.h}, feher, fekete, "Settings", go_to_settings};
+    /*A settings_button alapesetben a beállításokhoz visz, de ha ranglistás lett az eredmény, akkor ehelyett
+    nevet lehet vele rögzíteni, amivel a ranglistára felkerül a játékos*/
     if (top10(leaderboard, stats.wpm)) {
         settings_button.str = "Enter Name";
         settings_button.func = get_name;
@@ -1058,6 +1090,7 @@ void statistics(GameData* game_data) {
     SDL_RenderPresent(renderer);
     bool quit = false;
     SDL_Event event;
+    /*Az event loopban maradunk, amíg nem változik meg a nézet (gombnyomás hatására), vagy X-elik ki az ablakot*/
     while (!quit && game_data->game_view == Statistics && SDL_WaitEvent(&event)) {
         switch (event.type) {
             case SDL_MOUSEBUTTONDOWN:
@@ -1078,6 +1111,10 @@ void statistics(GameData* game_data) {
     }
 }
 
+/*
+A játékos nevét bekérő játéknézetért felelős függvény.
+GameData* game_data: a játék adatait tartalmazó struktúra pointere
+*/
 void ask_name(GameData* game_data) {
     SDL_Renderer* renderer = game_data->renderer;
     TTF_Font* font = game_data->font;
@@ -1087,6 +1124,7 @@ void ask_name(GameData* game_data) {
     SDL_Color vilagos_kek = {120, 150, 255};
     clear_screen(game_data, vilagos_kek);
     char display_str[2*HOSSZ];
+    //prompt
     sprintf(display_str, "WPM: %.2f, enter name!", game_data->stats.wpm);
     render_string_blended(display_str, fekete, font, game_data->szeles/2, game_data->magas/2-2*game_data->margo, renderer, Middle);
     SDL_RenderPresent(renderer);
@@ -1097,7 +1135,9 @@ void ask_name(GameData* game_data) {
         LeaderboardEntry entry;
         entry.wpm = game_data->stats.wpm;
         strcpy(entry.name, input);
-        update_leaderboard(&(game_data->leaderboard), entry);
+        if (strlen(entry.name) > 0) {
+            update_leaderboard(&(game_data->leaderboard), entry);
+        }
     }
     go_to_settings(game_data);
 }
